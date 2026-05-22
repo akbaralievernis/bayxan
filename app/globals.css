@@ -6,12 +6,31 @@
   --bg: 253 251 247;   /* ivory */
   --fg: 41 37 36;      /* stone-800 */
   --accent: 212 175 55;/* gold */
+  
+  --blob-1: rgba(212, 175, 55, 0.22);
+  --blob-2: rgba(251, 191, 36, 0.15);
+  --blob-3: rgba(255, 213, 175, 0.25);
+  --noise-opacity: 0.03;
+  --noise-blend: multiply;
+}
+
+.dark {
+  --bg: 18 13 10;      /* chocolate #120D0A */
+  --fg: 253 246 226;   /* cream #FDF6E2 */
+  --accent: 184 134 11;/* bronze #B8860B */
+  
+  --blob-1: rgba(184, 115, 51, 0.25); /* copper */
+  --blob-2: rgba(184, 134, 11, 0.18); /* bronze */
+  --blob-3: rgba(139, 69, 19, 0.20);  /* deep amber */
+  --noise-opacity: 0.06;
+  --noise-blend: screen;
 }
 
 html,
 body {
   background: rgb(var(--bg));
   color: rgb(var(--fg));
+  transition: background-color 0.3s, color 0.3s;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -28,14 +47,25 @@ body {
 }
 ::-webkit-scrollbar-track {
   background: #F8F3EA;
+  transition: background-color 0.3s;
+}
+.dark ::-webkit-scrollbar-track {
+  background: #17120E;
 }
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #EAD68C, #F0E7D5);
   border-radius: 999px;
   border: 2px solid #F8F3EA;
 }
+.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #B8860B, #5A4314);
+  border: 2px solid #17120E;
+}
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #D4AF37, #EAD68C);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #D4AF37, #B8860B);
 }
 
 @layer components {
@@ -48,6 +78,15 @@ body {
     background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: none;
+    transition: background 0.3s;
+  }
+
+  .dark .neon-text,
+  .dark .gold-text {
+    background: linear-gradient(135deg, #8C6A15 0%, #B8860B 35%, #EAD68C 55%, #8C6A15 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .neon-ring,
@@ -55,6 +94,14 @@ body {
     box-shadow:
       0 0 0 1px rgba(212, 175, 55, 0.30),
       0 12px 32px -10px rgba(212, 175, 55, 0.30);
+    transition: box-shadow 0.3s;
+  }
+
+  .dark .neon-ring,
+  .dark .gold-ring {
+    box-shadow:
+      0 0 0 1px rgba(184, 134, 11, 0.25),
+      0 12px 32px -10px rgba(184, 115, 51, 0.35);
   }
 
   /* Premium light glass — soft, frosted, with a fine highlight border. */
@@ -64,6 +111,13 @@ body {
     -webkit-backdrop-filter: blur(14px) saturate(150%);
     border: 1px solid rgba(255, 255, 255, 0.85);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+    transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .dark .glass-panel {
+    background: rgba(13, 11, 10, 0.82);
+    border: 1px solid rgba(184, 134, 11, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   }
 
   /* Same shape as the dark version but in warm stone — subtle line grid

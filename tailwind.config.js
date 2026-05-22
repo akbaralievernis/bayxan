@@ -20,6 +20,15 @@ module.exports = {
           400: "#E5D5A8",
         },
 
+        // Light cream-gold sand — monolithic dark theme text highlight base
+        cream: {
+          DEFAULT: "#FDF6E2",
+          50:  "#FFFFFF",
+          100: "#FDF6E2",
+          200: "#F8F3EA",
+          300: "#F0E7D5",
+        },
+
         // Metallic gold accent system. `gold.DEFAULT` is the user-spec #D4AF37.
         gold: {
           DEFAULT: "#D4AF37",

@@ -40,15 +40,15 @@ const GlassInput = forwardRef(function GlassInput(
         aria-invalid={!!error}
         className={cn(
           "peer w-full rounded-xl",
-          "bg-white/65 backdrop-blur-md",
-          "border border-white/85",
-          "shadow-[0_2px_10px_rgba(0,0,0,0.03)]",
-          "text-stone-800 text-sm placeholder:text-transparent",
+          "bg-white/65 dark:bg-stone-900/65 backdrop-blur-md",
+          "border border-white/85 dark:border-stone-800/80",
+          "shadow-[0_2px_10px_rgba(0,0,0,0.03)] dark:shadow-[0_2px_10px_rgba(0,0,0,0.25)]",
+          "text-stone-800 dark:text-[#FDF6E2] text-sm placeholder:text-transparent",
           "px-4 pt-5 pb-2",
           multiline && "resize-none pt-6 pb-3 min-h-[96px] leading-relaxed",
           "focus:outline-none",
-          "focus:bg-white/85 focus:border-gold-400/70",
-          "focus:shadow-[0_0_0_3px_rgba(212,175,55,0.15),inset_0_-1px_0_0_rgba(212,175,55,0.7)]",
+          "focus:bg-white/85 dark:focus:bg-stone-900/85 focus:border-gold-400/70 dark:focus:border-gold-500/70",
+          "focus:shadow-[0_0_0_3px_rgba(212,175,55,0.15),inset_0_-1px_0_0_rgba(212,175,55,0.7)] dark:focus:shadow-[0_0_0_3px_rgba(184,134,11,0.15),inset_0_-1px_0_0_rgba(184,134,11,0.7)]",
           "transition-all duration-200",
           error &&
             "border-red-300 focus:border-red-400 " +
@@ -63,21 +63,21 @@ const GlassInput = forwardRef(function GlassInput(
         className={cn(
           "absolute pointer-events-none transition-all duration-200 left-4",
           // default state = floating up (small, gold caps)
-          "top-1.5 text-[10px] tracking-[0.25em] uppercase text-gold-700",
+          "top-1.5 text-[10px] tracking-[0.25em] uppercase text-gold-700 dark:text-gold-500",
           // empty + not focused → drop down to natural placeholder position
           multiline
             ? "peer-placeholder-shown:top-4"
             : "peer-placeholder-shown:top-3.5",
           "peer-placeholder-shown:text-sm peer-placeholder-shown:tracking-normal",
-          "peer-placeholder-shown:normal-case peer-placeholder-shown:text-stone-400",
+          "peer-placeholder-shown:normal-case peer-placeholder-shown:text-stone-400 dark:peer-placeholder-shown:text-stone-500",
           // focus overrides everything → back up to floating gold
           "peer-focus:top-1.5 peer-focus:text-[10px] peer-focus:tracking-[0.25em]",
-          "peer-focus:uppercase peer-focus:text-gold-700",
+          "peer-focus:uppercase peer-focus:text-gold-700 dark:peer-focus:text-gold-500",
           error && "text-red-500 peer-focus:text-red-500"
         )}
       >
         {label}
-        {required && <span className="ml-0.5 text-gold-600">*</span>}
+        {required && <span className="ml-0.5 text-gold-600 dark:text-gold-500">*</span>}
       </label>
 
       {(hint || error) && (
