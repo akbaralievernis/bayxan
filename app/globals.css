@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 253 251 247;   /* ivory */
+  --fg: 41 37 36;      /* stone-800 */
+  --accent: 212 175 55;/* gold */
+}
+
+html,
+body {
+  background: rgb(var(--bg));
+  color: rgb(var(--fg));
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(212, 175, 55, 0.25);
+  color: #1c1917; /* stone-900 */
+}
+
+/* Scrollbar — slim cream track with gold-hover thumb */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #F8F3EA;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #EAD68C, #F0E7D5);
+  border-radius: 999px;
+  border: 2px solid #F8F3EA;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #D4AF37, #EAD68C);
+}
+
+@layer components {
+  /* Old "neon-text" name preserved for backwards compatibility — now renders
+     as a metallic gold gradient. New code should use `.gold-text`. */
+  .neon-text,
+  .gold-text {
+    background: linear-gradient(135deg, #B8941F 0%, #D4AF37 35%, #F5E8C0 55%, #B8941F 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+  }
+
+  .neon-ring,
+  .gold-ring {
+    box-shadow:
+      0 0 0 1px rgba(212, 175, 55, 0.30),
+      0 12px 32px -10px rgba(212, 175, 55, 0.30);
+  }
+
+  /* Premium light glass — soft, frosted, with a fine highlight border. */
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(14px) saturate(150%);
+    -webkit-backdrop-filter: blur(14px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Same shape as the dark version but in warm stone — subtle line grid
+     used as a structural backdrop element. */
+  .grid-overlay {
+    background-image:
+      linear-gradient(rgba(120, 90, 40, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(120, 90, 40, 0.05) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at 50% 0%, #000 30%, transparent 70%);
+  }
+
+  /* Vignette now warms the edges instead of darkening them. */
+  .vignette::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at 50% 60%,
+      transparent 55%,
+      rgba(60, 40, 10, 0.10) 100%
+    );
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .no-tap-highlight {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Native date / time picker indicators on `color-scheme: light` are dark
+   gray by default. Tint subtly toward amber/gold and dial opacity. */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(53%) sepia(82%) saturate(450%) hue-rotate(360deg) brightness(94%) contrast(89%);
+  opacity: 0.6;
+  cursor: pointer;
+  transition: opacity 0.18s;
+}
+input[type="date"]:hover::-webkit-calendar-picker-indicator,
+input[type="time"]:hover::-webkit-calendar-picker-indicator,
+input[type="date"]:focus::-webkit-calendar-picker-indicator,
+input[type="time"]:focus::-webkit-calendar-picker-indicator {
+  opacity: 1;
+}

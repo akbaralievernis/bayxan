@@ -1,0 +1,84 @@
+"use client";
+
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { X, Phone, MapPin } from "lucide-react";
+import { NAV_LINKS, RESTAURANT } from "@/lib/constants";
+import GoldButton from "@/components/ui/GoldButton";
+
+export default function MobileSheet({ onClose }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      className="fixed inset-0 z-50 md:hidden"
+    >
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="absolute inset-0 bg-stone-900/30 backdrop-blur-xl"
+        onClick={onClose}
+      />
+
+      <motion.div
+        initial={{ y: "100%" }}
+        animate={{ y: 0 }}
+        exit={{ y: "100%" }}
+        transition={{ type: "spring", damping: 30, stiffness: 280 }}
+        className="absolute bottom-0 inset-x-0 glass-panel rounded-t-3xl pt-3 pb-8 px-6"
+      >
+        <div className="mx-auto w-12 h-1.5 rounded-full bg-stone-300/70 mb-6" />
+
+        <div className="flex items-center justify-between mb-6">
+          <span className="font-display text-2xl tracking-widest text-stone-900">
+            {RESTAURANT.name}
+          </span>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close menu"
+            className="w-10 h-10 grid place-items-center rounded-full bg-white/60 border border-white/85 text-stone-700"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        <nav className="flex flex-col gap-1 mb-8">
+          {NAV_LINKS.map((l, i) => (
+            <motion.div
+              key={l.href}
+              initial={{ x: -16, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.05 + i * 0.05 }}
+            >
+              <Link
+                href={l.href}
+                onClick={onClose}
+                className="flex items-center justify-between py-4 px-2 border-b border-stone-200/70 text-stone-800 text-lg uppercase tracking-wider"
+              >
+                <span>{l.label}</span>
+                <span className="text-amber-600">→</span>
+              </Link>
+            </motion.div>
+          ))}
+        </nav>
+
+        <GoldButton href="/booking" variant="primary" className="w-full">
+          Забронировать
+        </GoldButton>
+
+        <div className="mt-6 flex items-center justify-between text-xs text-stone-500">
+          <span className="inline-flex items-center gap-1.5">
+            <Phone size={12} /> {RESTAURANT.phone}
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <MapPin size={12} /> {RESTAURANT.address}
+          </span>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
