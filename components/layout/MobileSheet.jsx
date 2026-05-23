@@ -36,14 +36,14 @@ export default function MobileSheet({ onClose }) {
         <div className="mx-auto w-12 h-1.5 rounded-full bg-stone-300/70 mb-6" />
 
         <div className="flex items-center justify-between mb-6">
-          <span className="font-display text-2xl tracking-widest text-stone-900">
+          <span className="font-display text-2xl tracking-widest text-stone-100">
             {RESTAURANT.name}
           </span>
           <button
             type="button"
             onClick={onClose}
             aria-label={t("nav.close_aria")}
-            className="w-10 h-10 grid place-items-center rounded-full bg-white/60 border border-white/85 text-stone-700"
+            className="w-10 h-10 grid place-items-center rounded-full bg-white/10 border border-white/20 text-stone-300 hover:bg-white/15"
           >
             <X size={20} />
           </button>
@@ -64,10 +64,10 @@ export default function MobileSheet({ onClose }) {
               <Link
                 href={l.href}
                 onClick={onClose}
-                className="flex items-center justify-between py-4 px-2 border-b border-stone-200/70 text-stone-800 text-lg uppercase tracking-wider"
+                className="flex items-center justify-between py-4 px-2 border-b border-stone-800/40 text-stone-200 hover:text-amber-400 text-lg uppercase tracking-wider transition-colors"
               >
                 <span>{t(l.labelKey)}</span>
-                <span className="text-amber-600">→</span>
+                <span className="text-amber-400">→</span>
               </Link>
             </motion.div>
           ))}
