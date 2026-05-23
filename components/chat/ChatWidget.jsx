@@ -11,7 +11,7 @@ import { RESTAURANT } from "@/lib/constants";
 const WELCOME = {
   id: "welcome",
   sender: "host",
-  body: `Welcome to ${RESTAURANT.name}. How may we help — a reservation, the menu, or something else?`,
+  body: `Добро пожаловать в ${RESTAURANT.name}. Чем мы можем вам помочь — забронировать стол, посмотреть меню или что-то другое?`,
   created_at: new Date().toISOString(),
 };
 
@@ -185,16 +185,16 @@ export default function ChatWidget() {
                   <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-400 border-2 border-obsidian-900" />
                 </div>
                 <div className="leading-tight">
-                  <div className="text-white text-sm font-medium">{RESTAURANT.name} Concierge</div>
+                  <div className="text-white text-sm font-medium">Консьерж {RESTAURANT.name}</div>
                   <div className="text-white/50 text-[11px] inline-flex items-center gap-1">
-                    <Sparkles size={10} className="text-neon" /> typically replies in a minute
+                    <Sparkles size={10} className="text-neon" /> обычно отвечает в течение минуты
                   </div>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={closeChat}
-                aria-label="Minimize chat"
+                aria-label="Свернуть чат"
                 className="w-8 h-8 grid place-items-center rounded-full text-white/60 hover:text-neon hover:bg-white/5"
               >
                 <X size={16} />
@@ -220,7 +220,7 @@ export default function ChatWidget() {
                 ref={inputRef}
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                placeholder="Write a message…"
+                placeholder="Напишите сообщение…"
                 className={cn(
                   "flex-1 bg-obsidian-800/80 text-white text-sm rounded-full px-4 py-2.5",
                   "border border-white/5 focus:border-neon/60 focus:outline-none",
@@ -238,7 +238,7 @@ export default function ChatWidget() {
                     ? "bg-neon text-obsidian-950 shadow-neon"
                     : "bg-obsidian-700 text-white/40 cursor-not-allowed"
                 )}
-                aria-label="Send message"
+                aria-label="Отправить сообщение"
               >
                 <Send size={16} strokeWidth={2.4} />
               </motion.button>

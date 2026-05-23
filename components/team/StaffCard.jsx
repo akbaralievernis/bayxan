@@ -16,8 +16,10 @@ const cardVariants = {
 };
 
 function initials(name) {
+  if (!name) return "?";
   return name
     .split(" ")
+    .filter(Boolean)
     .map((p) => p[0])
     .slice(0, 2)
     .join("")
@@ -28,7 +30,9 @@ export default function StaffCard({ person }) {
   const [imgError, setImgError] = useState(false);
 
   // Deterministic gradient seeded by id — same person → same colors across renders.
-  const seed = person.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  const seed = (person?.id || person?.name || "st-default")
+    .split("")
+    .reduce((a, c) => a + c.charCodeAt(0), 0);
   const hueA = seed % 360;
   const hueB = (hueA + 55) % 360;
 
@@ -46,11 +50,11 @@ export default function StaffCard({ person }) {
     >
       {/* Avatar */}
       <div className="relative aspect-square overflow-hidden bg-stone-50">
-        {!imgError && person.imagePlaceholder ? (
+        {!imgError && person?.imagePlaceholder ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={person.imagePlaceholder}
-            alt={person.name}
+            alt={person?.name || "Сотрудник"}
             loading="lazy"
             onError={() => setImgError(true)}
             className="absolute inset-0 w-full h-full object-cover grayscale-[0.2] transition-all duration-700 group-hover:grayscale-0 group-hover:scale-105"
@@ -63,7 +67,7 @@ export default function StaffCard({ person }) {
             }}
           >
             <span className="font-display text-5xl text-gold-700/60 select-none tracking-wider">
-              {initials(person.name)}
+              {initials(person?.name || "Сотрудник")}
             </span>
           </div>
         )}
@@ -74,10 +78,10 @@ export default function StaffCard({ person }) {
         {/* Name + role pinned to bottom of image */}
         <div className="absolute inset-x-0 bottom-0 p-3.5">
           <div className="text-[10px] uppercase tracking-[0.25em] text-amber-700 mb-1">
-            {person.role}
+            {person?.role || "Персонал"}
           </div>
           <h3 className="font-display text-lg leading-tight text-stone-800 text-balance font-medium">
-            {person.name}
+            {person?.name || "Сотрудник"}
           </h3>
         </div>
 
@@ -89,11 +93,11 @@ export default function StaffCard({ person }) {
       <div className="px-3.5 py-3 space-y-1.5 text-[12px] text-stone-600">
         <div className="flex items-center gap-2">
           <Award size={12} className="text-amber-600 shrink-0" />
-          <span className="truncate">{person.experience}</span>
+          <span className="truncate">{person?.experience || "Опыт: не указан"}</span>
         </div>
         <div className="flex items-center gap-2">
           <Clock size={12} className="text-amber-600 shrink-0" />
-          <span className="truncate">{person.shiftInfo}</span>
+          <span className="truncate">{person?.shiftInfo || "График: не указан"}</span>
         </div>
       </div>
     </motion.article>

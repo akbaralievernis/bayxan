@@ -46,6 +46,14 @@ export default function RootLayout({ children }) {
             `,
           }}
         />
+        {/* JivoChat Configuration - Force Russian (ru) Language */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.jivo_config = { locale: 'ru' };
+            `,
+          }}
+        />
       </head>
       <body className="font-sans bg-ivory dark:bg-[#120D0A] text-stone-800 dark:text-[#FDF6E2] antialiased min-h-screen overflow-x-clip transition-colors duration-300">
         {/* ── Ambient backdrop — warm, blurred, sunlit ──────────── */}

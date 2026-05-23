@@ -14,6 +14,7 @@ const gridVariants = {
 };
 
 export default function StaffGrid({ people }) {
+  const safePeople = people || [];
   return (
     <motion.div
       variants={gridVariants}
@@ -22,13 +23,13 @@ export default function StaffGrid({ people }) {
       viewport={{ once: true, margin: "-80px" }}
       className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3"
     >
-      {people.map((person) => (
-        <StaffCard key={person.id} person={person} />
+      {safePeople.map((person) => (
+        <StaffCard key={person?.id || person?.name || Math.random()} person={person} />
       ))}
 
-      {people.length === 0 && (
-        <div className="col-span-full py-16 text-center text-white/40">
-          В этом отделе пока никого нет.
+      {safePeople.length === 0 && (
+        <div className="col-span-full py-16 text-center text-stone-400/70 font-medium">
+          Данные загружаются...
         </div>
       )}
     </motion.div>

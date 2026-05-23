@@ -192,11 +192,11 @@ export default function Philosophy() {
       {/* Top & bottom edge fades — smooth handoff to light Hero above and Footer/next section below */}
       <div
         aria-hidden
-        className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-[#FDFBF7] to-transparent pointer-events-none"
+        className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-ivory dark:from-[#120D0A] to-transparent pointer-events-none"
       />
       <div
         aria-hidden
-        className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-[#FDFBF7] to-transparent pointer-events-none"
+        className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-ivory dark:from-[#120D0A] to-transparent pointer-events-none"
       />
     </section>
   );

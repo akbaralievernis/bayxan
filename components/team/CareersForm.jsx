@@ -106,8 +106,8 @@ export default function CareersForm() {
 
             <GoldButton
               type="submit"
-              disabled={submitting}
-              className="w-full mt-2 py-3.5"
+              disabled={submitting || !form.name.trim() || !form.phone.trim() || !form.position}
+              className="w-full mt-2 py-3.5 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {submitting ? (
                 <>
