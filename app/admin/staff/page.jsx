@@ -248,10 +248,10 @@ export default function StaffAdminPage() {
 }
 
 function Avatar({ name }) {
-  const initials = name?.split(" ").map((p) => p[0]).slice(0, 2).join("") || "?";
+  const initials = name ? name.split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("") : "?";
   return (
     <div className="w-10 h-10 rounded-full grid place-items-center bg-gradient-to-br from-amber-300 to-yellow-700 text-stone-900 text-sm font-bold shadow-gold-soft">
-      {initials}
+      {initials || "?"}
     </div>
   );
 }

@@ -131,13 +131,13 @@ export default function AdminLayout({ children }) {
 
             <div className="flex items-center gap-3">
               <div className="hidden sm:block text-right leading-tight">
-                <div className="text-[13px] text-[#FDF6E2] font-medium">{session.name}</div>
+                <div className="text-[13px] text-[#FDF6E2] font-medium">{session?.name || "Администратор"}</div>
                 <div className="text-[9px] uppercase tracking-[0.3em] text-amber-400 font-semibold">
-                  {session.role}
+                  {session?.role || "Админ"}
                 </div>
               </div>
               <div className="w-8 h-8 rounded-full grid place-items-center bg-amber-500/15 border border-amber-500/40 text-[11px] font-bold text-amber-300">
-                {session.name?.split(" ").map((p) => p[0]).slice(0, 2).join("")}
+                {session?.name ? session.name.split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("") : "?"}
               </div>
               <button
                 type="button"

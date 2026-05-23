@@ -4,6 +4,29 @@
 --
 -- Idempotent: every CREATE uses IF NOT EXISTS / IF NOT EXISTS guards so you
 -- can re-run it on an already-populated database.
+--
+-- NOTE ON SCHEMA UPDATES:
+-- If you previously ran an older version of this script, tables like `staff_profiles`
+-- will already exist. In PostgreSQL, `CREATE TABLE IF NOT EXISTS` will NOT add new
+-- columns (like `pin`) to an existing table. This results in "column does not exist" errors.
+--
+-- To resolve this:
+-- 
+-- Option A: If development data can be deleted (RECOMMENDED):
+--   Run this in the SQL editor:
+--     DROP TABLE IF EXISTS public.shifts, public.orders, public.order_items, public.staff_profiles CASCADE;
+--   Then re-run this entire script.
+--
+-- Option B: If you must preserve existing data:
+--   Run these migrations in the SQL editor to add the new columns:
+--     ALTER TABLE public.staff_profiles ADD COLUMN IF NOT EXISTS pin text;
+--     UPDATE public.staff_profiles SET pin = '0000' WHERE pin IS NULL;
+--     ALTER TABLE public.staff_profiles ALTER COLUMN pin SET NOT NULL;
+--
+--     ALTER TABLE public.staff_profiles ADD COLUMN IF NOT EXISTS title text;
+--     ALTER TABLE public.staff_profiles ADD COLUMN IF NOT EXISTS department text;
+--     ALTER TABLE public.staff_profiles ADD COLUMN IF NOT EXISTS is_admin boolean NOT NULL DEFAULT false;
+--     ALTER TABLE public.staff_profiles ADD COLUMN IF NOT EXISTS active boolean NOT NULL DEFAULT true;
 
 ------------------------------------------------------------------
 -- 1. Staff profiles + role enum
@@ -242,6 +265,7 @@ create trigger trg_set_updated_at_orders         before update on public.orders 
 ------------------------------------------------------------------
 -- Single-row return shape matches the app's expectations in lib/api/staff.js:
 --   { ok, profile_id, profile_name, profile_role, profile_department, is_admin }
+drop function if exists public.verify_staff_pin(text);
 create or replace function public.verify_staff_pin(p_pin text)
 returns table (
   ok                  boolean,

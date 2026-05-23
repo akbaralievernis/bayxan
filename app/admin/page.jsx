@@ -23,8 +23,12 @@ export default function AdminDashboard() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const s = await getDashboardStats();
-      if (!cancelled) setStats(s);
+      try {
+        const s = await getDashboardStats();
+        if (!cancelled) setStats(s);
+      } catch (err) {
+        console.error("Failed to load dashboard stats:", err);
+      }
     })();
     return () => { cancelled = true; };
   }, []);
