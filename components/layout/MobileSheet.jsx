@@ -36,9 +36,16 @@ export default function MobileSheet({ onClose }) {
         <div className="mx-auto w-12 h-1.5 rounded-full bg-stone-300/70 mb-6" />
 
         <div className="flex items-center justify-between mb-6">
-          <span className="font-display text-2xl tracking-widest text-stone-100">
-            {RESTAURANT.name}
-          </span>
+          <div className="flex items-center gap-2.5">
+            <img
+              src="/logo.jpg"
+              alt="Байхан Logo"
+              className="w-9 h-9 rounded-full object-cover border border-amber-500/30 shadow-md"
+            />
+            <span className="font-display text-2xl tracking-widest text-stone-100">
+              {RESTAURANT.name}
+            </span>
+          </div>
           <button
             type="button"
             onClick={onClose}

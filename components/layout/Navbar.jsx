@@ -50,9 +50,13 @@ export default function Navbar() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link
             href="/"
-            className="font-display text-2xl tracking-widest text-stone-900 dark:text-[#FDF6E2] flex items-center gap-2 transition-colors"
+            className="font-display text-2xl tracking-widest text-stone-900 dark:text-[#FDF6E2] flex items-center gap-2.5 transition-colors"
           >
-            <span className="inline-block w-2 h-2 rounded-full bg-gold-400 shadow-gold-soft animate-pulse-glow" />
+            <img
+              src="/logo.jpg"
+              alt="Байхан Logo"
+              className="w-9 h-9 rounded-full object-cover border border-amber-500/30 dark:border-gold-500/30 shadow-md"
+            />
             {RESTAURANT.name}
             <span className="hidden sm:inline text-stone-400 dark:text-stone-500 text-sm tracking-[0.4em] ml-1">
               {RESTAURANT.nameLocal}

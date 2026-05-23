@@ -86,9 +86,11 @@ export default function AdminLayout({ children }) {
         <header className="sticky top-0 z-30 border-b border-amber-900/30 bg-[#0F0A07]/85 backdrop-blur-md">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
             <Link href="/admin" className="flex items-center gap-2.5 group no-tap-highlight">
-              <span className="w-8 h-8 rounded-lg grid place-items-center bg-amber-500/15 border border-amber-500/40">
-                <ShieldCheck size={14} className="text-amber-400" />
-              </span>
+              <img
+                src="/logo.jpg"
+                alt="Байхан Logo"
+                className="w-8 h-8 rounded-full object-cover border border-amber-500/30"
+              />
               <span className="font-display text-base tracking-[0.25em] text-[#FDF6E2]">
                 {RESTAURANT.name}
                 <span className="ml-1.5 text-[9px] uppercase tracking-[0.35em] text-amber-400">

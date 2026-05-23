@@ -61,9 +61,11 @@ export default function StaffLayout({ children }) {
               href="/staff"
               className="flex items-center gap-2.5 group no-tap-highlight"
             >
-              <span className="relative w-7 h-7 rounded-md grid place-items-center bg-amber-50 border border-amber-200">
-                <ShieldCheck size={14} className="text-amber-700" />
-              </span>
+              <img
+                src="/logo.jpg"
+                alt="Байхан Logo"
+                className="w-7 h-7 rounded-full object-cover border border-amber-200 shadow-sm"
+              />
               <span className="font-display text-base tracking-[0.25em] text-stone-800">
                 {RESTAURANT.name}
                 <span className="ml-1.5 text-[9px] uppercase tracking-[0.35em] text-amber-600">

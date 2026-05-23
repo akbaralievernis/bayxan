@@ -49,9 +49,11 @@ export default function CashierLayout({ children }) {
         <header className="sticky top-0 z-30 border-b border-amber-900/30 bg-[#0F0A07]/90 backdrop-blur-md">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
             <Link href="/cashier" className="flex items-center gap-2.5">
-              <span className="w-8 h-8 rounded-lg grid place-items-center bg-blue-500/15 border border-blue-500/40">
-                <Banknote size={14} className="text-blue-400" />
-              </span>
+              <img
+                src="/logo.jpg"
+                alt="Байхан Logo"
+                className="w-8 h-8 rounded-full object-cover border border-blue-500/35"
+              />
               <span className="font-display text-base tracking-[0.25em] text-[#FDF6E2]">
                 {RESTAURANT.name}
                 <span className="ml-1.5 text-[9px] uppercase tracking-[0.35em] text-blue-400">

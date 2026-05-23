@@ -146,8 +146,12 @@ export default function PinLogin({
         className="relative w-full max-w-sm rounded-2xl bg-black/30 backdrop-blur-md border border-amber-900/40 p-8 sm:p-10 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]"
       >
         <div className="text-center mb-7">
-          <div className="mx-auto w-12 h-12 rounded-xl grid place-items-center bg-amber-500/15 border border-amber-500/40 mb-4">
-            <ShieldCheck size={20} className="text-amber-400" />
+          <div className="mx-auto mb-4 flex justify-center">
+            <img
+              src="/logo.jpg"
+              alt="Байхан Logo"
+              className="w-12 h-12 rounded-full object-cover border border-amber-500/30 shadow-md"
+            />
           </div>
           <div className="font-display text-2xl tracking-[0.25em] text-[#FDF6E2]">
             {RESTAURANT.name}

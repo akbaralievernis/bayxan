@@ -14,11 +14,18 @@ export default function Footer() {
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-gold-400/60 to-transparent" />
       <div className="mx-auto max-w-7xl px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
         <div>
-          <div className="font-display text-2xl tracking-widest text-stone-900 dark:text-[#FDF6E2] mb-2">
-            {RESTAURANT.name}
-            <span className="block text-stone-400 dark:text-stone-500 text-sm tracking-[0.4em] mt-1">
-              {RESTAURANT.nameLocal}
-            </span>
+          <div className="flex items-center gap-3 mb-3">
+            <img
+              src="/logo.jpg"
+              alt="Байхан Logo"
+              className="w-10 h-10 rounded-full object-cover border border-amber-500/30 dark:border-gold-500/30 shadow-md"
+            />
+            <div className="font-display text-2xl tracking-widest text-stone-900 dark:text-[#FDF6E2]">
+              {RESTAURANT.name}
+              <span className="block text-stone-400 dark:text-stone-500 text-sm tracking-[0.4em] mt-0.5">
+                {RESTAURANT.nameLocal}
+              </span>
+            </div>
           </div>
           <p className="text-stone-700 dark:text-stone-300 text-sm max-w-xs leading-relaxed">
             {t("footer.tagline")}
