@@ -77,13 +77,21 @@ export default function MobileSheet({ onClose }) {
           {t("nav.book_cta")}
         </GoldButton>
 
-        <div className="mt-6 flex items-center justify-between text-xs text-stone-500">
-          <span className="inline-flex items-center gap-1.5">
-            <Phone size={12} /> {RESTAURANT.phone}
-          </span>
-          <Link href="/admin" onClick={onClose} className="underline text-amber-700 font-semibold hover:text-amber-800 transition-colors">
+        <div className="mt-3.5 text-center">
+          <Link
+            href="/admin"
+            onClick={onClose}
+            className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-amber-400 hover:text-amber-300 py-2.5 px-6 rounded-full border border-amber-500/20 bg-amber-500/5 hover:bg-amber-500/10 transition-all font-semibold shadow-gold-soft"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse-glow" />
             Админ-панель
           </Link>
+        </div>
+
+        <div className="mt-6 flex items-center justify-center text-xs text-stone-500">
+          <span className="inline-flex items-center gap-1.5 font-medium">
+            <Phone size={12} className="text-amber-600/70" /> {RESTAURANT.phone}
+          </span>
         </div>
       </motion.div>
     </motion.div>
