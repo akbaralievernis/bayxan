@@ -1,0 +1,170 @@
+"use client";
+
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { Clock, MapPin, Phone, Sparkles } from "lucide-react";
+import GoldButton from "@/components/ui/GoldButton";
+import { useT } from "@/components/providers/LocaleProvider";
+
+/**
+ * Final-act call-to-action. Dark canvas with drifting copper glow, a giant
+ * editorial headline, three info chips (address / hours / phone) and the
+ * primary booking button. Sits right before the footer.
+ */
+export default function VisitCTA() {
+  const t = useT();
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const glowY = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
+  const headingY = useTransform(scrollYProgress, [0, 1], ["8%", "-8%"]);
+
+  return (
+    <section
+      ref={ref}
+      className="relative bg-[#0F0A07] text-[#FDF6E2] overflow-hidden"
+    >
+      {/* Top fade — handoff from light Testimonials above */}
+      <div
+        aria-hidden
+        className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-[#FDFBF7] to-transparent pointer-events-none"
+      />
+
+      {/* Ambient copper glow with subtle scroll parallax */}
+      <motion.div
+        aria-hidden
+        style={{ y: glowY }}
+        className="absolute inset-0 pointer-events-none"
+      >
+        <div
+          className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full opacity-50 blur-3xl"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(184,115,51,0.28), transparent 65%)",
+          }}
+        />
+        <div
+          className="absolute bottom-0 -right-32 w-[600px] h-[600px] rounded-full opacity-40 blur-3xl"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(212,175,55,0.22), transparent 60%)",
+          }}
+        />
+      </motion.div>
+
+      {/* Faint grid */}
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-[0.04] pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(212,175,55,1) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,1) 1px, transparent 1px)",
+          backgroundSize: "72px 72px",
+          maskImage:
+            "radial-gradient(ellipse at 50% 50%, #000 30%, transparent 75%)",
+        }}
+      />
+
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 py-24 sm:py-32 lg:py-40 text-center">
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+          className="text-[11px] uppercase tracking-[0.4em] text-amber-400 mb-5 font-semibold inline-flex items-center gap-2"
+        >
+          <Sparkles size={12} className="text-amber-400" />
+          {t("visit.eyebrow")}
+        </motion.p>
+
+        <motion.h2
+          style={{ y: headingY }}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          className="font-display text-5xl sm:text-6xl lg:text-8xl leading-[0.98] tracking-tight text-balance max-w-4xl mx-auto"
+        >
+          {t("visit.heading.l1")}<br />
+          <span className="gold-text italic">{t("visit.heading.l2")}</span>
+        </motion.h2>
+
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          className="mt-7 sm:mt-9 max-w-xl mx-auto text-stone-300 leading-relaxed"
+        >
+          {t("visit.tagline")}
+        </motion.p>
+
+        {/* Info trio */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.7, delay: 0.3 }}
+          className="mt-12 sm:mt-16 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-3xl mx-auto"
+        >
+          <InfoChip
+            icon={<MapPin size={16} className="text-amber-400" />}
+            title={t("visit.address.title")}
+            body={t("visit.address.body")}
+          />
+          <InfoChip
+            icon={<Clock size={16} className="text-amber-400" />}
+            title={t("visit.hours.title")}
+            body={t("visit.hours.body")}
+          />
+          <InfoChip
+            icon={<Phone size={16} className="text-amber-400" />}
+            title={t("visit.phone.title")}
+            body={t("visit.phone.body")}
+          />
+        </motion.div>
+
+        {/* Primary CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="mt-10 sm:mt-14 flex justify-center"
+        >
+          <GoldButton href="/booking" variant="primary" className="px-8 py-4 text-base">
+            {t("visit.cta")}
+          </GoldButton>
+        </motion.div>
+
+        {/* Subtle pulse ring under the button */}
+        <motion.div
+          aria-hidden
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.8, duration: 1 }}
+          className="mt-6 flex justify-center"
+        >
+          <span className="block w-12 h-px bg-gradient-to-r from-transparent via-amber-500/70 to-transparent" />
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function InfoChip({ icon, title, body }) {
+  return (
+    <div className="group rounded-2xl bg-black/30 backdrop-blur-md border border-amber-900/40 hover:border-amber-500/40 px-5 py-5 sm:py-6 transition-colors text-left">
+      <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-amber-400/80 mb-2">
+        {icon}
+        <span>{title}</span>
+      </div>
+      <div className="font-display text-base sm:text-lg text-[#FDF6E2] leading-snug">
+        {body}
+      </div>
+    </div>
+  );
+}

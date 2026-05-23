@@ -5,8 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, ArrowRight } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
 import { formatKGS } from "@/lib/utils";
+import { useT, useLocale } from "@/components/providers/LocaleProvider";
 
 export default function OrderSummary() {
+  const t = useT();
+  const { locale } = useLocale();
   const items = useCartStore((s) => s.items);
   const total = items.reduce((s, i) => s + i.price * i.quantity, 0);
   const count = items.reduce((s, i) => s + i.quantity, 0);
@@ -22,15 +25,15 @@ export default function OrderSummary() {
         <div className="mx-auto w-14 h-14 rounded-full grid place-items-center border border-gold-300/70 bg-white/80 shadow-gold-soft mb-4">
           <ShoppingBag size={20} className="text-amber-600" />
         </div>
-        <h3 className="font-display text-lg text-stone-900 mb-2">Без предзаказа</h3>
+        <h3 className="font-display text-lg text-stone-900 mb-2">{t("order.empty.title")}</h3>
         <p className="text-sm text-stone-500 leading-relaxed mb-5">
-          Вы можете добавить блюда из меню для предзаказа к вашему столу.
+          {t("order.empty.body")}
         </p>
         <Link
           href="/menu"
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-gold-400/50 text-amber-700 text-xs uppercase tracking-wider hover:bg-amber-50/70 hover:border-gold-500/80 hover:shadow-gold-soft transition-all"
         >
-          К меню <ArrowRight size={12} />
+          {t("order.empty.cta")} <ArrowRight size={12} />
         </Link>
       </motion.div>
     );
@@ -45,10 +48,10 @@ export default function OrderSummary() {
     >
       <header className="px-5 py-4 border-b border-stone-200/70 bg-white/40">
         <h3 className="text-xs uppercase tracking-[0.3em] text-amber-700">
-          Предзаказ к столу
+          {t("order.header.title")}
         </h3>
         <p className="text-[11px] text-stone-500 mt-1 tabular-nums">
-          {items.length} {plur(items.length)} · {count} шт.
+          {items.length} {plur(items.length, locale)} · {count} {locale === "ky" ? "даана" : "шт."}
         </p>
       </header>
 
@@ -88,7 +91,7 @@ export default function OrderSummary() {
 
       <footer className="px-5 py-4 border-t border-stone-200/70 bg-white/40 flex items-baseline justify-between">
         <span className="text-xs uppercase tracking-[0.25em] text-stone-500">
-          Итого
+          {t("order.footer.total")}
         </span>
         <motion.span
           key={total}
@@ -104,7 +107,9 @@ export default function OrderSummary() {
   );
 }
 
-function plur(n) {
+function plur(n, locale) {
+  // Kyrgyz nouns don't change for plurality with a counter — single form is fine.
+  if (locale === "ky") return "позиция";
   const m10 = n % 10;
   const m100 = n % 100;
   if (m10 === 1 && m100 !== 11) return "позиция";

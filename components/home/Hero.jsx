@@ -4,13 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDown, Star } from "lucide-react";
 import GoldButton from "@/components/ui/GoldButton";
-import { RESTAURANT } from "@/lib/constants";
-
-const HEADING_LINES = [
-  { text: "Где степь", accent: false },
-  { text: "встречает", accent: false },
-  { text: "огонь.", accent: true },
-];
+import { useT } from "@/components/providers/LocaleProvider";
 
 const containerVariants = {
   hidden: {},
@@ -30,6 +24,12 @@ const lineVariants = {
 };
 
 export default function Hero() {
+  const t = useT();
+  const headingLines = [
+    { text: t("hero.heading.l1"), accent: false },
+    { text: t("hero.heading.l2"), accent: false },
+    { text: t("hero.heading.l3"), accent: true },
+  ];
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -79,21 +79,23 @@ export default function Hero() {
         />
       </motion.div>
 
-      {/* Content */}
+      {/* Content — sits in the lower third of the viewport. Heading sizes
+          shrunk so three lines + tagline + CTA + stats fit on a 100svh hero
+          without clipping the top line off-screen. */}
       <motion.div
         style={{ y: fgY, opacity: fade }}
-        className="relative z-10 h-full mx-auto max-w-7xl px-6 sm:px-10 flex flex-col justify-end pb-20 sm:pb-28"
+        className="relative z-10 h-full mx-auto max-w-7xl px-6 sm:px-10 flex flex-col justify-end pb-16 sm:pb-20"
       >
         {/* Eyebrow */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05, duration: 0.6 }}
-          className="flex items-center gap-3 mb-6"
+          className="flex items-center gap-3 mb-5"
         >
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/70 backdrop-blur-md border border-gold-300/50 text-amber-800 text-[11px] uppercase tracking-[0.3em] shadow-glass">
             <span className="w-1.5 h-1.5 rounded-full bg-gold-400 shadow-gold-soft animate-pulse-glow" />
-            Теперь открыты в Бишкеке
+            {t("hero.eyebrow")}
           </span>
           <span className="hidden sm:inline-flex items-center gap-1 text-stone-600 text-xs">
             <Star size={12} className="fill-amber-500 text-amber-500" />
@@ -101,18 +103,19 @@ export default function Hero() {
             <Star size={12} className="fill-amber-500 text-amber-500" />
             <Star size={12} className="fill-amber-500 text-amber-500" />
             <Star size={12} className="fill-amber-500 text-amber-500" />
-            <span className="ml-2">4.9 · 1 240 отзывов</span>
+            <span className="ml-2">{t("hero.reviews")}</span>
           </span>
         </motion.div>
 
-        {/* Heading — staggered lines */}
+        {/* Heading — staggered lines. Scale tuned so three lines never overflow
+            the safe area on small laptops (≈768px viewport height). */}
         <motion.h1
           variants={containerVariants}
           initial="hidden"
           animate="show"
-          className="font-display leading-[0.95] tracking-tight text-balance text-stone-900 text-6xl sm:text-7xl md:text-8xl lg:text-[9.5rem] max-w-5xl"
+          className="font-display leading-[0.95] tracking-tight text-balance text-stone-900 text-5xl sm:text-6xl md:text-7xl lg:text-8xl max-w-5xl"
         >
-          {HEADING_LINES.map((l, i) => (
+          {headingLines.map((l, i) => (
             <motion.span
               key={i}
               variants={lineVariants}
@@ -128,11 +131,9 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.6 }}
-          className="mt-8 max-w-xl text-stone-700 text-base sm:text-lg leading-relaxed"
+          className="mt-6 max-w-xl text-stone-700 text-sm sm:text-base leading-relaxed"
         >
-          Традиции Востока, современная подача. {RESTAURANT.name} —
-          пространство, где каждый вкус рассказывает свою историю.
-          Открыты ежедневно, по предварительной брони.
+          {t("hero.tagline")}
         </motion.p>
 
         {/* CTAs */}
@@ -140,27 +141,27 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.85, duration: 0.6 }}
-          className="mt-10 flex flex-wrap items-center gap-3"
+          className="mt-7 flex flex-wrap items-center gap-3"
         >
           <GoldButton href="/booking" variant="primary">
-            Забронировать стол
+            {t("hero.cta.book")}
           </GoldButton>
           <GoldButton href="/menu" variant="ghost">
-            Посмотреть меню
+            {t("hero.cta.menu")}
           </GoldButton>
         </motion.div>
 
-        {/* Stats strip */}
+        {/* Stats strip — hidden on shorter viewports to preserve breathing room */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.1, duration: 0.8 }}
-          className="mt-14 hidden sm:grid grid-cols-3 max-w-2xl gap-px bg-white/40 border border-white/85 rounded-2xl overflow-hidden shadow-glass"
+          className="mt-10 hidden lg:grid grid-cols-3 max-w-2xl gap-px bg-white/40 border border-white/85 rounded-2xl overflow-hidden shadow-glass"
         >
           {[
-            { k: "12+", l: "Авторских блюд" },
-            { k: "9",   l: "Лет мастерства" },
-            { k: "VIP", l: "Кабины · терраса" },
+            { k: t("hero.stats.dishes_k"), l: t("hero.stats.dishes_l") },
+            { k: t("hero.stats.years_k"),  l: t("hero.stats.years_l")  },
+            { k: t("hero.stats.vip_k"),    l: t("hero.stats.vip_l")    },
           ].map((s) => (
             <div
               key={s.l}
@@ -183,7 +184,7 @@ export default function Hero() {
         animate={{ opacity: 1 }}
         transition={{ delay: 1.4 }}
       >
-        <span className="text-[10px] uppercase tracking-[0.35em]">Вниз</span>
+        <span className="text-[10px] uppercase tracking-[0.35em]">{t("hero.scroll")}</span>
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}

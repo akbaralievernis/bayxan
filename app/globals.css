@@ -33,6 +33,18 @@ body {
   transition: background-color 0.3s, color 0.3s;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* Prevent any descendant from punching a horizontal scrollbar onto the page.
+     `overflow-x: clip` is preferred over `hidden` because it never establishes
+     a scrollport, so `position: sticky` inside still works (Navbar, summary). */
+  overflow-x: clip;
+}
+
+html {
+  /* Stable scrollbar gutter eliminates the ~15px width jump that triggers
+     during route changes when one page has a scrollbar and the next doesn't. */
+  scrollbar-gutter: stable;
+  /* iOS — block rubber-band reveal of off-canvas content during nav. */
+  overscroll-behavior-y: none;
 }
 
 ::selection {
@@ -150,6 +162,39 @@ body {
   }
   .no-tap-highlight {
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* WCAG 2.5.5 — minimum 44×44px hit target for interactive elements on touch.
+     Apply to buttons, links, and form fields. `touch-target-lg` for primary
+     CTAs on the booking and menu surfaces. */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .touch-target-lg {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  /* Skeleton shimmer keyframe — referenced by components/ui/Skeleton.jsx
+     via animate-[shimmer_1.6s_infinite]. Lives at utility layer so it's
+     globally available without a Tailwind config entry. */
+  @keyframes shimmer {
+    100% { transform: translateX(100%); }
+  }
+}
+
+/* Honor users who request reduced motion — disable Framer-Motion-style
+   transforms and the skeleton pulse to save battery and prevent vestibular
+   discomfort. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 

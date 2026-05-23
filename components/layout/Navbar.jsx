@@ -10,10 +10,13 @@ import { cn } from "@/lib/utils";
 import GoldButton from "@/components/ui/GoldButton";
 import MobileSheet from "./MobileSheet";
 import ThemeToggle from "./ThemeToggle";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useT } from "@/components/providers/LocaleProvider";
 import { useCartStore } from "@/store/useCartStore";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const t = useT();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -77,20 +80,23 @@ export default function Navbar() {
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
-                  <span className="relative z-10">{l.label}</span>
+                  <span className="relative z-10">{t(l.labelKey)}</span>
                 </Link>
               );
             })}
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Language switcher — RU / KY */}
+            <LanguageSwitcher className="hidden sm:inline-flex" />
+
             {/* Theme Toggle - premium light & monolithic dark */}
             <ThemeToggle />
 
             {/* Cart button — visible on all sizes */}
             <motion.button
               type="button"
-              aria-label="Открыть корзину"
+              aria-label={t("nav.cart_aria")}
               onClick={openCart}
               whileHover={{ scale: 1.06 }}
               whileTap={{ scale: 0.92 }}
@@ -112,12 +118,12 @@ export default function Navbar() {
 
             <div className="hidden md:block">
               <GoldButton href="/booking" variant="primary" className="px-5 py-2 text-xs">
-                Забронировать
+                {t("nav.book_cta")}
               </GoldButton>
             </div>
             <button
               type="button"
-              aria-label="Open menu"
+              aria-label={t("nav.menu_aria")}
               onClick={() => setOpen(true)}
               className="md:hidden w-10 h-10 grid place-items-center rounded-full bg-white/70 dark:bg-stone-900/60 backdrop-blur-md border border-white/85 dark:border-stone-800/80 text-stone-700 dark:text-stone-200 hover:text-amber-700 dark:hover:text-gold-400 hover:border-gold-300/70 dark:hover:border-gold-500/70 shadow-glass transition-colors"
             >

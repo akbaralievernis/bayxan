@@ -6,8 +6,10 @@ import CategoryRail from "@/components/menu/CategoryRail";
 import DishGrid from "@/components/menu/DishGrid";
 import { CATEGORIES } from "@/lib/mockData";
 import { fetchMenu } from "@/lib/api/menu";
+import { useT } from "@/components/providers/LocaleProvider";
 
 export default function MenuPage() {
+  const t = useT();
   const [activeCategory, setActiveCategory] = useState("all");
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,7 +34,7 @@ export default function MenuPage() {
   }, [activeCategory, menuItems]);
 
   const activeLabel =
-    CATEGORIES.find((c) => c.id === activeCategory)?.label ?? "Меню";
+    CATEGORIES.find((c) => c.id === activeCategory)?.label ?? t("menu.title_fallback");
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-6 pb-24">
@@ -44,15 +46,14 @@ export default function MenuPage() {
         className="py-8 sm:py-12"
       >
         <p className="text-[11px] uppercase tracking-[0.35em] text-neon mb-3">
-          · Меню ·
+          {t("menu.eyebrow")}
         </p>
         <h1 className="font-display text-5xl sm:text-6xl md:text-7xl leading-[0.95] tracking-tight text-white">
-          Каждое блюдо —<br />
-          <span className="neon-text italic">наш почерк.</span>
+          {t("menu.heading.l1")}<br />
+          <span className="neon-text italic">{t("menu.heading.l2")}</span>
         </h1>
         <p className="mt-5 max-w-xl text-white/55 leading-relaxed">
-          Двадцать одна позиция, отобранная шеф-командой Bayhan. Цены указаны в
-          киргизских сомах (KGS).
+          {t("menu.tagline")}
         </p>
       </motion.header>
 
@@ -70,7 +71,7 @@ export default function MenuPage() {
         <span className="font-display text-2xl text-white">{activeLabel}</span>
         <span className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent" />
         <span className="text-xs uppercase tracking-[0.25em] text-white/45 tabular-nums">
-          {loading ? "Загрузка..." : `${dishes.length} ${pluralize(dishes.length)}`}
+          {loading ? t("menu.loading") : `${dishes.length} ${pluralize(dishes.length)}`}
         </span>
       </motion.div>
 

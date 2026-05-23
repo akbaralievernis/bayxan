@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 const base =
   "group relative inline-flex items-center justify-center gap-2 px-6 py-3 " +
   "font-medium tracking-wide uppercase text-sm rounded-full " +
-  "no-tap-highlight transition-all overflow-hidden";
+  "no-tap-highlight touch-target transition-all overflow-hidden";
 
 const variants = {
   primary: cn(

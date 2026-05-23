@@ -12,31 +12,61 @@ import BookingSuccess from "@/components/booking/BookingSuccess";
 import { useCartStore } from "@/store/useCartStore";
 import { submitBooking } from "@/lib/api/bookings";
 import { cn } from "@/lib/utils";
+import { useT, useLocale } from "@/components/providers/LocaleProvider";
 
-const TABLE_TYPES = [
-  { id: "standard", label: "Обычный стол", hint: "2–4 гостя"  },
-  { id: "vip",      label: "VIP-кабина",    hint: "4–8 гостей" },
-  { id: "terrace",  label: "Терраса",       hint: "2–6 гостей" },
-];
+// Option dictionaries — labels chosen per current locale at render time.
+const TABLE_TYPES = {
+  ru: [
+    { id: "standard", label: "Обычный стол", hint: "2–4 гостя" },
+    { id: "vip",      label: "VIP-кабина",   hint: "4–8 гостей" },
+    { id: "terrace",  label: "Терраса",      hint: "2–6 гостей" },
+  ],
+  ky: [
+    { id: "standard", label: "Кадимки стол", hint: "2–4 конок" },
+    { id: "vip",      label: "VIP-кабина",   hint: "4–8 конок" },
+    { id: "terrace",  label: "Терраса",      hint: "2–6 конок" },
+  ],
+};
 
-const EVENT_TYPES = [
-  { id: "casual",      label: "Обычный ужин" },
-  { id: "birthday",    label: "День рождения" },
-  { id: "corporate",   label: "Корпоратив" },
-  { id: "anniversary", label: "Годовщина" },
-];
+const EVENT_TYPES = {
+  ru: [
+    { id: "casual",      label: "Обычный ужин" },
+    { id: "birthday",    label: "День рождения" },
+    { id: "corporate",   label: "Корпоратив" },
+    { id: "anniversary", label: "Годовщина" },
+  ],
+  ky: [
+    { id: "casual",      label: "Кадимки кечки тамак" },
+    { id: "birthday",    label: "Туулган күн" },
+    { id: "corporate",   label: "Корпоратив" },
+    { id: "anniversary", label: "Жылдык" },
+  ],
+};
 
-const GUEST_OPTIONS = [
-  { id: "2",  label: "2 гостя" },
-  { id: "3",  label: "3 гостя" },
-  { id: "4",  label: "4 гостя" },
-  { id: "5",  label: "5 гостей" },
-  { id: "6",  label: "6 гостей" },
-  { id: "8",  label: "8 гостей" },
-  { id: "10", label: "10+ гостей" },
-];
+const GUEST_OPTIONS = {
+  ru: [
+    { id: "2",  label: "2 гостя" },
+    { id: "3",  label: "3 гостя" },
+    { id: "4",  label: "4 гостя" },
+    { id: "5",  label: "5 гостей" },
+    { id: "6",  label: "6 гостей" },
+    { id: "8",  label: "8 гостей" },
+    { id: "10", label: "10+ гостей" },
+  ],
+  ky: [
+    { id: "2",  label: "2 конок" },
+    { id: "3",  label: "3 конок" },
+    { id: "4",  label: "4 конок" },
+    { id: "5",  label: "5 конок" },
+    { id: "6",  label: "6 конок" },
+    { id: "8",  label: "8 конок" },
+    { id: "10", label: "10+ конок" },
+  ],
+};
 
 export default function BookingPage() {
+  const t = useT();
+  const { locale } = useLocale();
   const items = useCartStore((s) => s.items);
 
   const [form, setForm] = useState({
@@ -68,9 +98,13 @@ export default function BookingPage() {
     if (result.ok) {
       setSuccess(result.bookingId);
     } else {
-      setErrorMsg(result.error || "Не удалось отправить бронь. Попробуйте ещё раз.");
+      setErrorMsg(result.error || t("booking.error.generic"));
     }
   }
+
+  const tableOptions = TABLE_TYPES[locale] ?? TABLE_TYPES.ru;
+  const eventOptions = EVENT_TYPES[locale] ?? EVENT_TYPES.ru;
+  const guestOptions = GUEST_OPTIONS[locale] ?? GUEST_OPTIONS.ru;
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-6 pb-24">
@@ -82,15 +116,14 @@ export default function BookingPage() {
         className="py-8 sm:py-12"
       >
         <p className="text-[11px] uppercase tracking-[0.35em] text-amber-700 mb-3">
-          · Бронирование ·
+          {t("booking.eyebrow")}
         </p>
         <h1 className="font-display text-5xl sm:text-6xl md:text-7xl leading-[0.95] tracking-tight text-stone-900">
-          Стол ждёт<br />
-          <span className="gold-text italic">именно вас.</span>
+          {t("booking.heading.l1")}<br />
+          <span className="gold-text italic">{t("booking.heading.l2")}</span>
         </h1>
         <p className="mt-5 max-w-xl text-stone-600 leading-relaxed">
-          Заполните форму — мы подтвердим бронь в течение нескольких минут.
-          Можно добавить блюда из меню как предзаказ.
+          {t("booking.tagline")}
         </p>
       </motion.header>
 
@@ -98,72 +131,72 @@ export default function BookingPage() {
       <div className="grid lg:grid-cols-[1fr,360px] gap-6 lg:gap-8 items-start">
         {/* ───── LEFT — Form ───── */}
         <form onSubmit={onSubmit} className="space-y-5" noValidate>
-          <Section title="Контактные данные">
+          <Section title={t("booking.section.contact")}>
             <div className="grid sm:grid-cols-2 gap-3">
               <GlassInput
-                label="Имя"
+                label={t("booking.field.name")}
                 value={form.name}
                 onChange={updateField("name")}
                 required
                 autoComplete="name"
               />
               <GlassInput
-                label="Телефон"
+                label={t("booking.field.phone")}
                 type="tel"
                 value={form.phone}
                 onChange={updateField("phone")}
                 required
                 autoComplete="tel"
-                hint="Формат: +996 ..."
+                hint={t("booking.field.phone_hint")}
               />
             </div>
           </Section>
 
-          <Section title="Дата · время · гости">
+          <Section title={t("booking.section.when")}>
             <div className="grid sm:grid-cols-3 gap-3">
               <DatePicker
-                label="Дата"
+                label={t("booking.field.date")}
                 value={form.date}
                 onChange={updateField("date")}
                 required
               />
               <TimePicker
-                label="Время"
+                label={t("booking.field.time")}
                 value={form.time}
                 onChange={updateField("time")}
                 required
               />
               <GlassSelect
-                label="Гостей"
+                label={t("booking.field.guests")}
                 value={form.guests}
                 onChange={(v) => setField("guests", v)}
-                options={GUEST_OPTIONS}
+                options={guestOptions}
                 required
               />
             </div>
           </Section>
 
-          <Section title="Зона и повод">
+          <Section title={t("booking.section.zone")}>
             <div className="grid sm:grid-cols-2 gap-3">
               <GlassSelect
-                label="Тип стола"
+                label={t("booking.field.tabletype")}
                 value={form.tableType}
                 onChange={(v) => setField("tableType", v)}
-                options={TABLE_TYPES}
+                options={tableOptions}
                 required
               />
               <GlassSelect
-                label="Тип мероприятия"
+                label={t("booking.field.eventtype")}
                 value={form.eventType}
                 onChange={(v) => setField("eventType", v)}
-                options={EVENT_TYPES}
+                options={eventOptions}
               />
             </div>
           </Section>
 
-          <Section title="Особые пожелания">
+          <Section title={t("booking.section.requests")}>
             <GlassInput
-              label="Пожелания (аллергии, рассадка и т.д.)"
+              label={t("booking.field.requests")}
               value={form.requests}
               onChange={updateField("requests")}
               multiline
@@ -185,10 +218,10 @@ export default function BookingPage() {
             )}
           </AnimatePresence>
 
-          <SubmitButton submitting={submitting} hasPreorder={items.length > 0} />
+          <SubmitButton submitting={submitting} hasPreorder={items.length > 0} t={t} />
 
           <p className="text-center text-[11px] text-stone-400">
-            Нажимая «Подтвердить», вы соглашаетесь с условиями обслуживания.
+            {t("booking.terms")}
           </p>
         </form>
 
@@ -233,7 +266,7 @@ function Section({ title, children }) {
   );
 }
 
-function SubmitButton({ submitting, hasPreorder }) {
+function SubmitButton({ submitting, hasPreorder, t }) {
   return (
     <motion.button
       type="submit"
@@ -262,12 +295,12 @@ function SubmitButton({ submitting, hasPreorder }) {
       <span className="relative z-10 inline-flex items-center gap-2">
         {submitting ? (
           <>
-            <Spinner /> Подтверждаем бронь…
+            <Spinner /> {t("booking.submit.loading")}
           </>
         ) : (
           <>
             <Sparkles size={16} strokeWidth={2.4} />
-            {hasPreorder ? "Подтвердить бронь и предзаказ" : "Подтвердить бронирование"}
+            {hasPreorder ? t("booking.submit.idle.preorder") : t("booking.submit.idle.plain")}
           </>
         )}
       </span>

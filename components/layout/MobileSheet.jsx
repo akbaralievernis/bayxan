@@ -5,8 +5,11 @@ import Link from "next/link";
 import { X, Phone, MapPin } from "lucide-react";
 import { NAV_LINKS, RESTAURANT } from "@/lib/constants";
 import GoldButton from "@/components/ui/GoldButton";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useT } from "@/components/providers/LocaleProvider";
 
 export default function MobileSheet({ onClose }) {
+  const t = useT();
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -39,11 +42,15 @@ export default function MobileSheet({ onClose }) {
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close menu"
+            aria-label={t("nav.close_aria")}
             className="w-10 h-10 grid place-items-center rounded-full bg-white/60 border border-white/85 text-stone-700"
           >
             <X size={20} />
           </button>
+        </div>
+
+        <div className="mb-5 flex justify-center">
+          <LanguageSwitcher />
         </div>
 
         <nav className="flex flex-col gap-1 mb-8">
@@ -59,7 +66,7 @@ export default function MobileSheet({ onClose }) {
                 onClick={onClose}
                 className="flex items-center justify-between py-4 px-2 border-b border-stone-200/70 text-stone-800 text-lg uppercase tracking-wider"
               >
-                <span>{l.label}</span>
+                <span>{t(l.labelKey)}</span>
                 <span className="text-amber-600">→</span>
               </Link>
             </motion.div>
@@ -67,7 +74,7 @@ export default function MobileSheet({ onClose }) {
         </nav>
 
         <GoldButton href="/booking" variant="primary" className="w-full">
-          Забронировать
+          {t("nav.book_cta")}
         </GoldButton>
 
         <div className="mt-6 flex items-center justify-between text-xs text-stone-500">

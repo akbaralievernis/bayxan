@@ -7,12 +7,14 @@ import CareersForm from "@/components/team/CareersForm";
 import StaffAccessModal from "@/components/team/StaffAccessModal";
 import { STAFF, DEPARTMENTS } from "@/lib/staffData";
 import { cn } from "@/lib/utils";
+import { useT } from "@/components/providers/LocaleProvider";
 
 // Easter-egg constants
 const TAP_GOAL = 5;
 const TAP_WINDOW_MS = 2000;
 
 export default function TeamPage() {
+  const t = useT();
   const [dept, setDept] = useState("all");
   const [accessOpen, setAccessOpen] = useState(false);
 
@@ -46,19 +48,18 @@ export default function TeamPage() {
         className="py-8 sm:py-12"
       >
         <p className="text-[11px] uppercase tracking-[0.35em] text-amber-600 mb-3 font-semibold">
-          · Команда ·
+          {t("team.eyebrow")}
         </p>
         <h1
           onClick={triggerHeading}
           className="font-display text-5xl sm:text-6xl md:text-7xl leading-[0.95] tracking-tight text-stone-800 select-none cursor-default"
-          aria-label="Наша команда"
+          aria-label={`${t("team.heading.l1")} ${t("team.heading.l2")}`}
         >
-          Наша<br />
-          <span className="gold-text italic">Команда.</span>
+          {t("team.heading.l1")}<br />
+          <span className="gold-text italic">{t("team.heading.l2")}</span>
         </h1>
         <p className="mt-5 max-w-xl text-stone-500 leading-relaxed">
-          Двадцать человек, у каждого своё дело. Шеф-команда, зал и бар работают
-          как единый организм — это и есть Bayhan.
+          {t("team.tagline")}
         </p>
       </motion.header>
 
@@ -108,29 +109,20 @@ export default function TeamPage() {
         {/* Left — invitation copy */}
         <div className="lg:pt-4">
           <p className="text-[11px] uppercase tracking-[0.35em] text-amber-600 mb-3 font-semibold">
-            · Открытые позиции ·
+            {t("team.careers.eyebrow")}
           </p>
           <h2 className="font-display text-4xl sm:text-5xl text-stone-800 leading-[0.95] tracking-tight mb-5">
-            Мы ищем тех,<br />
-            кто <span className="gold-text italic">любит дело.</span>
+            {t("team.careers.heading.l1")}<br />
+            {t("team.careers.heading.l2")}{" "}
+            <span className="gold-text italic">{t("team.careers.heading.l3")}</span>
           </h2>
           <ul className="space-y-3 text-stone-600 text-sm leading-relaxed">
-            <li className="flex gap-3">
-              <span className="text-amber-600 mt-1">·</span>
-              Стабильная зарплата + чаевые, выплачиваемые ежедневно.
-            </li>
-            <li className="flex gap-3">
-              <span className="text-amber-600 mt-1">·</span>
-              Питание и форма за счёт ресторана.
-            </li>
-            <li className="flex gap-3">
-              <span className="text-amber-600 mt-1">·</span>
-              Обучение у шеф-команды с опытом работы за рубежом.
-            </li>
-            <li className="flex gap-3">
-              <span className="text-amber-600 mt-1">·</span>
-              Гибкий график, возможность роста до старших позиций.
-            </li>
+            {["bullet1", "bullet2", "bullet3", "bullet4"].map((k) => (
+              <li key={k} className="flex gap-3">
+                <span className="text-amber-600 mt-1">·</span>
+                {t(`team.careers.${k}`)}
+              </li>
+            ))}
           </ul>
         </div>
 

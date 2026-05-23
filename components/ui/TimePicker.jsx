@@ -18,7 +18,7 @@ export default function TimePicker({
   return (
     <div
       className={cn(
-        "relative rounded-xl transition-all duration-200",
+        "relative rounded-xl transition-all duration-200 touch-target-lg",
         "bg-white/60 backdrop-blur-md border border-stone-200",
         "shadow-[0_2px_10px_rgba(0,0,0,0.03)]",
         "hover:bg-white/80 hover:border-stone-300",

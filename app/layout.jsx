@@ -38,6 +38,10 @@ export default function RootLayout({ children }) {
                 } else {
                   document.documentElement.classList.remove('dark');
                 }
+                const savedLocale = localStorage.getItem('locale');
+                if (savedLocale === 'ru' || savedLocale === 'ky') {
+                  document.documentElement.lang = savedLocale;
+                }
               } catch (_) {}
             `,
           }}
