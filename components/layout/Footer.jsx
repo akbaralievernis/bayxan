@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { RESTAURANT, NAV_LINKS } from "@/lib/constants";
 import { Instagram, Phone, MapPin } from "lucide-react";
-import { useT } from "@/components/providers/LocaleProvider";
+import { useT, useLocale } from "@/components/providers/LocaleProvider";
 
 export default function Footer() {
   const t = useT();
+  const { locale } = useLocale();
+  const city = locale === "ky" ? RESTAURANT.cityKy : RESTAURANT.cityRu;
   return (
     <footer className="relative mt-24 border-t border-stone-200/70 bg-white/40 backdrop-blur-md">
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-gold-400/60 to-transparent" />
@@ -39,8 +41,38 @@ export default function Footer() {
         <div>
           <h4 className="text-xs uppercase tracking-[0.3em] text-amber-700 mb-4">{t("footer.contacts")}</h4>
           <ul className="space-y-2 text-sm text-stone-600">
-            <li className="inline-flex items-center gap-2"><Phone size={14} className="text-amber-600/70" /> {RESTAURANT.phone}</li>
-            <li className="inline-flex items-center gap-2"><MapPin size={14} className="text-amber-600/70" /> {RESTAURANT.address}, {RESTAURANT.city}</li>
+            <li>
+              <a
+                href={`tel:${RESTAURANT.phone.replace(/[^\d+]/g, "")}`}
+                className="inline-flex items-center gap-2 hover:text-amber-700 transition-colors tabular-nums"
+              >
+                <Phone size={14} className="text-amber-600/70" /> {RESTAURANT.phone}
+              </a>
+            </li>
+            <li>
+              <a
+                href={`tel:${RESTAURANT.phoneAlt.replace(/[^\d+]/g, "")}`}
+                className="inline-flex items-center gap-2 hover:text-amber-700 transition-colors tabular-nums pl-6"
+              >
+                {RESTAURANT.phoneAlt}
+              </a>
+            </li>
+            <li>
+              <a
+                href={RESTAURANT.mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-start gap-2 hover:text-amber-700 transition-colors"
+              >
+                <MapPin size={14} className="text-amber-600/70 mt-0.5 shrink-0" />
+                <span>
+                  {locale === "ky" ? RESTAURANT.addressKy : RESTAURANT.address}
+                  <span className="block text-xs text-stone-500 mt-0.5">
+                    {locale === "ky" ? "Кашкар-Кыштак айылы, Ош облусу" : "с. Кашгар-Кыштак, Ошская область"}
+                  </span>
+                </span>
+              </a>
+            </li>
             <li className="inline-flex items-center gap-2"><Instagram size={14} className="text-amber-600/70" /> @bayhan.kg</li>
           </ul>
         </div>
@@ -49,7 +81,7 @@ export default function Footer() {
           <h4 className="text-xs uppercase tracking-[0.3em] text-amber-700 mb-4">{t("footer.hours")}</h4>
           <ul className="space-y-2 text-sm text-stone-600">
             <li>{t("footer.hours.mon_thu")}</li>
-            <li>{t("footer.hours.fri_sun")}</li>
+            <li className="text-stone-500">{t("footer.hours.fri_sun")}</li>
           </ul>
         </div>
       </div>

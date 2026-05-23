@@ -2,9 +2,11 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Clock, MapPin, Phone, Sparkles } from "lucide-react";
+import { Clock, MapPin, Phone, Sparkles, ExternalLink } from "lucide-react";
 import GoldButton from "@/components/ui/GoldButton";
+import MapEmbed from "@/components/ui/MapEmbed";
 import { useT } from "@/components/providers/LocaleProvider";
+import { RESTAURANT } from "@/lib/constants";
 
 /**
  * Final-act call-to-action. Dark canvas with drifting copper glow, a giant
@@ -101,29 +103,65 @@ export default function VisitCTA() {
           {t("visit.tagline")}
         </motion.p>
 
-        {/* Info trio */}
+        {/* Map + info — split layout. Map left (anchors the eye), info stack
+            right. Stacks vertically on mobile so the map keeps its aspect. */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          className="mt-12 sm:mt-16 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-3xl mx-auto"
+          transition={{ duration: 0.7, delay: 0.25 }}
+          className="mt-12 sm:mt-16 grid lg:grid-cols-[1.3fr,1fr] gap-4 sm:gap-5 max-w-5xl mx-auto text-left"
         >
-          <InfoChip
-            icon={<MapPin size={16} className="text-amber-400" />}
-            title={t("visit.address.title")}
-            body={t("visit.address.body")}
+          <MapEmbed
+            variant="dark"
+            height={380}
+            label={t("visit.map.label")}
+            className="min-h-[280px]"
           />
-          <InfoChip
-            icon={<Clock size={16} className="text-amber-400" />}
-            title={t("visit.hours.title")}
-            body={t("visit.hours.body")}
-          />
-          <InfoChip
-            icon={<Phone size={16} className="text-amber-400" />}
-            title={t("visit.phone.title")}
-            body={t("visit.phone.body")}
-          />
+
+          <div className="grid grid-cols-1 gap-3 sm:gap-4">
+            <InfoChip
+              icon={<MapPin size={16} className="text-amber-400" />}
+              title={t("visit.address.title")}
+              body={t("visit.address.body")}
+              subline={t("visit.address.line2")}
+              action={
+                <a
+                  href={RESTAURANT.mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.25em] text-amber-300 hover:text-amber-200 mt-2 transition-colors"
+                >
+                  {t("visit.address.maps_cta")} <ExternalLink size={10} />
+                </a>
+              }
+            />
+            <InfoChip
+              icon={<Clock size={16} className="text-amber-400" />}
+              title={t("visit.hours.title")}
+              body={t("visit.hours.body")}
+            />
+            <InfoChip
+              icon={<Phone size={16} className="text-amber-400" />}
+              title={t("visit.phone.title")}
+              body={
+                <a
+                  href={`tel:${RESTAURANT.phone.replace(/[^\d+]/g, "")}`}
+                  className="hover:text-amber-200 transition-colors"
+                >
+                  {RESTAURANT.phone}
+                </a>
+              }
+              action={
+                <a
+                  href={`tel:${RESTAURANT.phoneAlt.replace(/[^\d+]/g, "")}`}
+                  className="block text-sm text-stone-300 hover:text-amber-200 transition-colors mt-1 tabular-nums"
+                >
+                  {RESTAURANT.phoneAlt}
+                </a>
+              }
+            />
+          </div>
         </motion.div>
 
         {/* Primary CTA */}
@@ -155,9 +193,9 @@ export default function VisitCTA() {
   );
 }
 
-function InfoChip({ icon, title, body }) {
+function InfoChip({ icon, title, body, subline, action }) {
   return (
-    <div className="group rounded-2xl bg-black/30 backdrop-blur-md border border-amber-900/40 hover:border-amber-500/40 px-5 py-5 sm:py-6 transition-colors text-left">
+    <div className="group rounded-2xl bg-black/30 backdrop-blur-md border border-amber-900/40 hover:border-amber-500/40 px-5 py-5 transition-colors text-left">
       <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-amber-400/80 mb-2">
         {icon}
         <span>{title}</span>
@@ -165,6 +203,10 @@ function InfoChip({ icon, title, body }) {
       <div className="font-display text-base sm:text-lg text-[#FDF6E2] leading-snug">
         {body}
       </div>
+      {subline && (
+        <div className="mt-1 text-xs text-stone-400 leading-relaxed">{subline}</div>
+      )}
+      {action}
     </div>
   );
 }

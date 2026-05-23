@@ -15,9 +15,9 @@ const display = Playfair_Display({
 });
 
 export const metadata = {
-  title: `${RESTAURANT.name} · Premium Dining in ${RESTAURANT.city}`,
+  title: `${RESTAURANT.name} · Premium Dining in ${RESTAURANT.cityRu}`,
   description:
-    `${RESTAURANT.name} (${RESTAURANT.nameLocal}) — a modern dining destination by ${RESTAURANT.owner}.`,
+    `Кафе ${RESTAURANT.nameLocal} (${RESTAURANT.name}) — премиальный ресторан в ${RESTAURANT.cityRu}, ${RESTAURANT.region}. Бронирование стола онлайн.`,
 };
 
 export const viewport = {
