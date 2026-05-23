@@ -45,14 +45,14 @@ export default function MenuPage() {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="py-8 sm:py-12"
       >
-        <p className="text-[11px] uppercase tracking-[0.35em] text-neon mb-3">
+        <p className="text-[11px] uppercase tracking-[0.35em] text-amber-600 mb-3 font-semibold">
           {t("menu.eyebrow")}
         </p>
-        <h1 className="font-display text-5xl sm:text-6xl md:text-7xl leading-[0.95] tracking-tight text-white">
+        <h1 className="font-display text-5xl sm:text-6xl md:text-7xl leading-[0.95] tracking-tight text-stone-800 dark:text-[#FDF6E2]">
           {t("menu.heading.l1")}<br />
-          <span className="neon-text italic">{t("menu.heading.l2")}</span>
+          <span className="gold-text italic">{t("menu.heading.l2")}</span>
         </h1>
-        <p className="mt-5 max-w-xl text-white/55 leading-relaxed">
+        <p className="mt-5 max-w-xl text-stone-500 dark:text-stone-400 leading-relaxed">
           {t("menu.tagline")}
         </p>
       </motion.header>
@@ -68,9 +68,9 @@ export default function MenuPage() {
         transition={{ duration: 0.3 }}
         className="flex items-center gap-3 mt-6 mb-4"
       >
-        <span className="font-display text-2xl text-white">{activeLabel}</span>
-        <span className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent" />
-        <span className="text-xs uppercase tracking-[0.25em] text-white/45 tabular-nums">
+        <span className="font-display text-2xl text-stone-800 dark:text-[#FDF6E2]">{activeLabel}</span>
+        <span className="flex-1 h-px bg-gradient-to-r from-stone-300/60 dark:from-stone-800/30 to-transparent" />
+        <span className="text-xs uppercase tracking-[0.25em] text-stone-500 dark:text-stone-400 tabular-nums">
           {loading ? t("menu.loading") : `${dishes.length} ${pluralize(dishes.length)}`}
         </span>
       </motion.div>

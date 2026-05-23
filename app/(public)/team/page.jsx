@@ -52,13 +52,13 @@ export default function TeamPage() {
         </p>
         <h1
           onClick={triggerHeading}
-          className="font-display text-5xl sm:text-6xl md:text-7xl leading-[0.95] tracking-tight text-stone-800 select-none cursor-default"
+          className="font-display text-5xl sm:text-6xl md:text-7xl leading-[0.95] tracking-tight text-stone-800 dark:text-[#FDF6E2] select-none cursor-default"
           aria-label={`${t("team.heading.l1")} ${t("team.heading.l2")}`}
         >
           {t("team.heading.l1")}<br />
           <span className="gold-text italic">{t("team.heading.l2")}</span>
         </h1>
-        <p className="mt-5 max-w-xl text-stone-500 leading-relaxed">
+        <p className="mt-5 max-w-xl text-stone-500 dark:text-stone-400 leading-relaxed">
           {t("team.tagline")}
         </p>
       </motion.header>
@@ -74,13 +74,13 @@ export default function TeamPage() {
               onClick={() => setDept(d.id)}
               className={cn(
                 "relative px-4 py-1.5 rounded-full text-xs uppercase tracking-wider transition-colors no-tap-highlight",
-                active ? "text-amber-900 font-semibold" : "text-stone-500 hover:text-stone-800"
+                active ? "text-amber-900 dark:text-gold-300 font-semibold" : "text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-[#FDF6E2]"
               )}
             >
               {active && (
                 <motion.span
                   layoutId="dept-pill"
-                  className="absolute inset-0 rounded-full bg-amber-100 border border-amber-200/50 shadow-gold-soft"
+                  className="absolute inset-0 rounded-full bg-amber-100 dark:bg-amber-950/40 border border-amber-200/50 dark:border-amber-900/30 shadow-gold-soft"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -88,7 +88,7 @@ export default function TeamPage() {
             </button>
           );
         })}
-        <span className="ml-auto text-[11px] text-stone-400 uppercase tracking-[0.25em] tabular-nums">
+        <span className="ml-auto text-[11px] text-stone-400 dark:text-stone-500 uppercase tracking-[0.25em] tabular-nums">
           {people.length} {pluralPeople(people.length)}
         </span>
       </div>
@@ -111,12 +111,12 @@ export default function TeamPage() {
           <p className="text-[11px] uppercase tracking-[0.35em] text-amber-600 mb-3 font-semibold">
             {t("team.careers.eyebrow")}
           </p>
-          <h2 className="font-display text-4xl sm:text-5xl text-stone-800 leading-[0.95] tracking-tight mb-5">
+          <h2 className="font-display text-4xl sm:text-5xl text-stone-800 dark:text-[#FDF6E2] leading-[0.95] tracking-tight mb-5">
             {t("team.careers.heading.l1")}<br />
             {t("team.careers.heading.l2")}{" "}
             <span className="gold-text italic">{t("team.careers.heading.l3")}</span>
           </h2>
-          <ul className="space-y-3 text-stone-600 text-sm leading-relaxed">
+          <ul className="space-y-3 text-stone-600 dark:text-stone-300 text-sm leading-relaxed">
             {["bullet1", "bullet2", "bullet3", "bullet4"].map((k) => (
               <li key={k} className="flex gap-3">
                 <span className="text-amber-600 mt-1">·</span>

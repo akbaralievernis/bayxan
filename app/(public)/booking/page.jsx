@@ -118,11 +118,11 @@ export default function BookingPage() {
         <p className="text-[11px] uppercase tracking-[0.35em] text-amber-700 mb-3">
           {t("booking.eyebrow")}
         </p>
-        <h1 className="font-display text-5xl sm:text-6xl md:text-7xl leading-[0.95] tracking-tight text-stone-900">
+        <h1 className="font-display text-5xl sm:text-6xl md:text-7xl leading-[0.95] tracking-tight text-stone-900 dark:text-[#FDF6E2]">
           {t("booking.heading.l1")}<br />
           <span className="gold-text italic">{t("booking.heading.l2")}</span>
         </h1>
-        <p className="mt-5 max-w-xl text-stone-600 leading-relaxed">
+        <p className="mt-5 max-w-xl text-stone-600 dark:text-stone-300 leading-relaxed">
           {t("booking.tagline")}
         </p>
       </motion.header>
@@ -255,10 +255,10 @@ function Section({ title, children }) {
       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       className={cn(
         "rounded-2xl p-4 sm:p-5",
-        "bg-white/70 backdrop-blur-md border border-white/90 shadow-sm"
+        "bg-white/70 dark:bg-stone-900/40 backdrop-blur-md border border-white/90 dark:border-stone-850/40 shadow-sm"
       )}
     >
-      <legend className="text-[11px] uppercase tracking-[0.3em] text-stone-500 mb-3 px-1">
+      <legend className="text-[11px] uppercase tracking-[0.3em] text-stone-500 dark:text-stone-450 mb-3 px-1">
         {title}
       </legend>
       <div className="space-y-3">{children}</div>
