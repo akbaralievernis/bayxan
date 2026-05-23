@@ -81,9 +81,9 @@ export default function MobileSheet({ onClose }) {
           <span className="inline-flex items-center gap-1.5">
             <Phone size={12} /> {RESTAURANT.phone}
           </span>
-          <span className="inline-flex items-center gap-1.5">
-            <MapPin size={12} /> {RESTAURANT.address}
-          </span>
+          <Link href="/admin" onClick={onClose} className="underline text-amber-700 font-semibold hover:text-amber-800 transition-colors">
+            Админ-панель
+          </Link>
         </div>
       </motion.div>
     </motion.div>

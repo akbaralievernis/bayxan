@@ -86,8 +86,12 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-stone-200/70 py-5 text-center text-xs text-stone-400">
-        © {new Date().getFullYear()} {RESTAURANT.name}. {t("footer.copyright")}
+      <div className="border-t border-stone-200/70 py-5 text-center text-xs text-stone-400 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <span>© {new Date().getFullYear()} {RESTAURANT.name}. {t("footer.copyright")}</span>
+        <span className="hidden sm:inline text-stone-300">·</span>
+        <Link href="/admin" className="text-stone-500 hover:text-amber-700 transition-colors underline decoration-dotted underline-offset-4 font-medium">
+          Админ-панель
+        </Link>
       </div>
     </footer>
   );
