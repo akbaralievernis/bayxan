@@ -10,6 +10,9 @@ import {
   UtensilsCrossed,
   LogOut,
   ShieldCheck,
+  Users,
+  Armchair,
+  Receipt,
 } from "lucide-react";
 import { getAdminSession, clearAdminSession } from "@/lib/adminSession";
 import { RESTAURANT } from "@/lib/constants";
@@ -21,9 +24,12 @@ export function useAdminSession() {
 }
 
 const NAV = [
-  { href: "/admin",          label: "Сводка",  icon: LayoutDashboard, exact: true },
-  { href: "/admin/bookings", label: "Брони",   icon: CalendarCheck },
-  { href: "/admin/menu",     label: "Меню",    icon: UtensilsCrossed },
+  { href: "/admin",          label: "Сводка",     icon: LayoutDashboard, exact: true },
+  { href: "/admin/orders",   label: "Заказы",     icon: Receipt },
+  { href: "/admin/tables",   label: "Столы",      icon: Armchair },
+  { href: "/admin/bookings", label: "Брони",      icon: CalendarCheck },
+  { href: "/admin/menu",     label: "Меню",       icon: UtensilsCrossed },
+  { href: "/admin/staff",    label: "Сотрудники", icon: Users },
 ];
 
 export default function AdminLayout({ children }) {
