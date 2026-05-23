@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { useT } from "@/components/providers/LocaleProvider";
 
@@ -64,35 +64,46 @@ export default function Achievements() {
 /**
  * Animated number counter. Parses the leading digits; everything else (k, +,
  * dots) is kept verbatim as a suffix.
+ *
+ * Parsing is memoized so the useEffect deps stay stable across renders — if
+ * we put the raw match array in deps, every setValue would re-trigger the
+ * effect (new object identity) and the animation would never advance past
+ * the first frame.
  */
 function Counter({ target, start }) {
   const [value, setValue] = useState(0);
-  const match = String(target).match(/^([\d.,]+)(.*)$/);
-  const numeric = match ? parseFloat(match[1].replace(",", ".")) : 0;
-  const suffix = match ? match[2] : "";
-  const decimals = match && match[1].includes(".") ? 1 : 0;
+
+  const parsed = useMemo(() => {
+    const m = String(target).match(/^([\d.,]+)(.*)$/);
+    if (!m) return null;
+    return {
+      numeric: parseFloat(m[1].replace(",", ".")),
+      suffix: m[2],
+      decimals: m[1].includes(".") ? 1 : 0,
+    };
+  }, [target]);
 
   useEffect(() => {
-    if (!start || !match) return;
+    if (!start || !parsed) return;
     let raf;
     const duration = 1400;
     const t0 = performance.now();
     const tick = (now) => {
       const p = Math.min(1, (now - t0) / duration);
       const eased = 1 - Math.pow(1 - p, 3);
-      setValue(numeric * eased);
+      setValue(parsed.numeric * eased);
       if (p < 1) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [start, numeric, match]);
+  }, [start, parsed]);
 
-  if (!match) return <span>{target}</span>;
+  if (!parsed) return <span>{target}</span>;
 
   return (
     <span className="tabular-nums">
-      {value.toFixed(decimals)}
-      <span className="gold-text">{suffix}</span>
+      {value.toFixed(parsed.decimals)}
+      <span className="gold-text">{parsed.suffix}</span>
     </span>
   );
 }
