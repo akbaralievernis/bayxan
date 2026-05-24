@@ -51,7 +51,8 @@ create table if not exists public.staff_profiles (
   department   text,
   phone        text,
   avatar_url   text,
-  pin          text not null,                  -- 4-digit, hashed in production
+  login        text unique not null,
+  password     text not null,
   is_admin     boolean not null default false, -- gate for /admin surface
   active       boolean not null default true,
   hired_at     date default current_date,
@@ -59,7 +60,7 @@ create table if not exists public.staff_profiles (
   updated_at   timestamptz not null default now()
 );
 
-create index if not exists idx_staff_profiles_pin on public.staff_profiles(pin);
+create index if not exists idx_staff_profiles_login on public.staff_profiles(login);
 create index if not exists idx_staff_profiles_role on public.staff_profiles(role);
 
 ------------------------------------------------------------------
@@ -237,6 +238,20 @@ create trigger trg_recalc_order_total
   for each row execute function public.recalc_order_total();
 
 ------------------------------------------------------------------
+-- 4f. Chat Messages
+------------------------------------------------------------------
+create table if not exists public.chat_messages (
+  id           uuid primary key default gen_random_uuid(),
+  thread_id    text not null,
+  sender       text not null check (sender in ('guest', 'waiter', 'staff', 'admin')),
+  body         text not null,
+  created_at   timestamptz not null default now()
+);
+
+create index if not exists idx_chat_messages_thread_id on public.chat_messages(thread_id);
+create index if not exists idx_chat_messages_created_at on public.chat_messages(created_at);
+
+------------------------------------------------------------------
 -- 5. updated_at triggers (DRY: one function, applied to every table)
 ------------------------------------------------------------------
 create or replace function public.set_updated_at()
@@ -266,7 +281,8 @@ create trigger trg_set_updated_at_orders         before update on public.orders 
 -- Single-row return shape matches the app's expectations in lib/api/staff.js:
 --   { ok, profile_id, profile_name, profile_role, profile_department, is_admin }
 drop function if exists public.verify_staff_pin(text);
-create or replace function public.verify_staff_pin(p_pin text)
+drop function if exists public.verify_staff_credentials(text, text);
+create or replace function public.verify_staff_credentials(p_login text, p_password text)
 returns table (
   ok                  boolean,
   profile_id          uuid,
@@ -285,7 +301,8 @@ returns table (
     sp.department,
     sp.is_admin
   from public.staff_profiles sp
-  where sp.pin = p_pin
+  where sp.login = p_login
+    and sp.password = p_password
     and sp.active = true
   limit 1
 $$;
@@ -306,23 +323,39 @@ drop policy if exists "anon can create booking" on public.bookings;
 create policy "anon can create booking" on public.bookings
   for insert with check (true);
 
+-- Chat messages: anyone can insert and read for now
+alter table public.chat_messages enable row level security;
+drop policy if exists "anyone can manage chat_messages" on public.chat_messages;
+create policy "anyone can manage chat_messages" on public.chat_messages
+  for all using (true) with check (true);
+
 -- Staff tables — admin/service-role only. Don't expose to anon clients.
 alter table public.staff_profiles enable row level security;
 alter table public.shifts         enable row level security;
 
+-- Explicit Table Grants for robust anonymous/client execution
+grant all privileges on table public.bookings to anon, authenticated, service_role;
+grant all privileges on table public.chat_messages to anon, authenticated, service_role;
+grant all privileges on table public.menu_items to anon, authenticated, service_role;
+grant all privileges on table public.tables to anon, authenticated, service_role;
+grant all privileges on table public.orders to anon, authenticated, service_role;
+grant all privileges on table public.order_items to anon, authenticated, service_role;
+grant all privileges on table public.staff_profiles to anon, authenticated, service_role;
+grant all privileges on table public.shifts to anon, authenticated, service_role;
+
 ------------------------------------------------------------------
 -- 8. Seed data (only inserted if tables are empty)
 ------------------------------------------------------------------
-insert into public.staff_profiles (name, role, title, department, pin, is_admin)
+insert into public.staff_profiles (name, role, title, department, login, password, is_admin)
 select * from (values
-  ('Байхан Асанов',   'admin'::staff_role,   'Владелец',                  'admin',   '0000', true),
-  ('Эльдар Бекбаев',  'manager'::staff_role, 'Старший администратор',     'admin',   '9012', true),
-  ('Айгуль Сатарова', 'cook'::staff_role,    'Су-шеф',                    'kitchen', '5678', false),
-  ('Нурлан Каримов',  'cook'::staff_role,    'Повар',                     'kitchen', '1234', false),
-  ('Алия Жунушева',   'waiter'::staff_role,  'Старший официант',          'hall',    '2222', false),
-  ('Тимур Абдылдаев', 'waiter'::staff_role,  'Официант',                  'hall',    '3333', false),
-  ('Назгуль Орозова', 'cashier'::staff_role, 'Кассир',                    'hall',    '4444', false)
-) as v(name, role, title, department, pin, is_admin)
+  ('Байхан Асанов',   'admin'::staff_role,   'Владелец',                  'admin',   'asanov',     '0000', true),
+  ('Эльдар Бекбаев',  'manager'::staff_role, 'Старший администратор',     'admin',   'bekbaev',    '9012', true),
+  ('Айгуль Сатарова', 'cook'::staff_role,    'Су-шеф',                    'kitchen', 'satarova',   '5678', false),
+  ('Нурлан Каримов',  'cook'::staff_role,    'Повар',                     'kitchen', 'karimov',    '1234', false),
+  ('Алия Жунушева',   'waiter'::staff_role,  'Старший официант',          'hall',    'zhunusheva', '2222', false),
+  ('Тимур Абдылдаев', 'waiter'::staff_role,  'Официант',                  'hall',    'abdyldaev',  '3333', false),
+  ('Назгуль Орозова', 'cashier'::staff_role, 'Кассир',                    'hall',    'orozova',    '4444', false)
+) as v(name, role, title, department, login, password, is_admin)
 where not exists (select 1 from public.staff_profiles);
 
 -- Sample restaurant tables: 6 mains, 2 VIP, 4 terrace.

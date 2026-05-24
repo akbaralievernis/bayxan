@@ -62,7 +62,7 @@ export default function StaffLayout({ children }) {
               className="flex items-center gap-2.5 group no-tap-highlight"
             >
               <img
-                src="/logo.jpg"
+                src="/logo.jpeg"
                 alt="Байхан Logo"
                 className="w-7 h-7 rounded-full object-cover border border-amber-200 shadow-sm"
               />

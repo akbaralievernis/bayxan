@@ -3,13 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, ShieldCheck, Loader2 } from "lucide-react";
-import { verifyPin } from "@/lib/api/staff";
+import { Lock, ShieldCheck, Loader2, User } from "lucide-react";
+import { verifyCredentials } from "@/lib/api/staff";
 import { setAdminSession } from "@/lib/adminSession";
 import { RESTAURANT } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-
-const PIN_LEN = 4;
 
 // Map roles to the portal each can access.
 const ROLE_PORTAL = {
@@ -22,7 +20,7 @@ const ROLE_PORTAL = {
 };
 
 /**
- * Generic PIN-login screen reused by /admin/login, /waiter/login, /cashier/login.
+ * Generic Login-screen reused by /admin/login, /waiter/login, /cashier/login.
  *
  * Props:
  *   - portal: "admin" | "waiter" | "cashier" — restricts which roles can enter.
@@ -32,7 +30,7 @@ const ROLE_PORTAL = {
  *   - onSuccess(session): called when login succeeds AND role is allowed.
  *                         Default: stores in adminSession and redirects.
  */
-export default function PinLogin({
+export default function Login({
   portal = "admin",
   allowedRoles,
   subtitle = "· Вход для администратора ·",
@@ -40,60 +38,28 @@ export default function PinLogin({
   onSuccess,
 }) {
   const router = useRouter();
-  const [digits, setDigits] = useState(["", "", "", ""]);
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [shake, setShake] = useState(false);
-  const inputs = useRef([]);
-
-  useEffect(() => { inputs.current[0]?.focus(); }, []);
+  const loginInputRef = useRef(null);
 
   useEffect(() => {
-    if (digits.every((d) => d.length === 1) && !busy) {
-      submit(digits.join(""));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [digits]);
+    loginInputRef.current?.focus();
+  }, []);
 
-  function handleChange(i, value) {
-    const v = value.replace(/\D/g, "").slice(-1);
-    setDigits((prev) => {
-      const next = [...prev];
-      next[i] = v;
-      return next;
-    });
-    if (v && i < PIN_LEN - 1) inputs.current[i + 1]?.focus();
-  }
-
-  function handleKeyDown(i, e) {
-    if (e.key === "Backspace" && !digits[i] && i > 0) {
-      inputs.current[i - 1]?.focus();
-      setDigits((prev) => {
-        const next = [...prev];
-        next[i - 1] = "";
-        return next;
-      });
-    }
-  }
-
-  function handlePaste(e) {
-    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, PIN_LEN);
-    if (!pasted) return;
+  async function handleSubmit(e) {
     e.preventDefault();
-    const next = [...digits];
-    for (let i = 0; i < PIN_LEN; i++) next[i] = pasted[i] || "";
-    setDigits(next);
-    inputs.current[Math.min(pasted.length, PIN_LEN - 1)]?.focus();
-  }
+    if (!login.trim() || !password.trim()) return;
 
-  async function submit(pin) {
     setBusy(true);
     setError("");
-    const result = await verifyPin(pin);
+    const result = await verifyCredentials(login.trim(), password.trim());
     setBusy(false);
 
     if (!result.ok || !result.session) {
-      return fail(result.error || "Неверный PIN");
+      return fail(result.error || "Неверный логин или пароль");
     }
 
     const session = result.session;
@@ -104,8 +70,8 @@ export default function PinLogin({
       const targetPortal = ROLE_PORTAL[role];
       return fail(
         targetPortal
-          ? `Этот PIN относится к роли «${roleLabel(role)}». Вход через ${targetPortal}.`
-          : `Этот PIN не имеет доступа к панели «${portal}»`
+          ? `Этот аккаунт относится к роли «${roleLabel(role)}». Вход через ${targetPortal}.`
+          : `Этот аккаунт не имеет доступа к панели «${portal}»`
       );
     }
 
@@ -121,10 +87,10 @@ export default function PinLogin({
   function fail(message) {
     setError(message);
     setShake(true);
-    setDigits(["", "", "", ""]);
+    setPassword("");
     setTimeout(() => {
       setShake(false);
-      inputs.current[0]?.focus();
+      loginInputRef.current?.focus();
     }, 400);
   }
 
@@ -148,7 +114,7 @@ export default function PinLogin({
         <div className="text-center mb-7">
           <div className="mx-auto mb-4 flex justify-center">
             <img
-              src="/logo.jpg"
+              src="/logo.jpeg"
               alt="Байхан Logo"
               className="w-12 h-12 rounded-full object-cover border border-amber-500/30 shadow-md"
             />
@@ -164,49 +130,75 @@ export default function PinLogin({
           </p>
         </div>
 
-        <motion.div
+        <motion.form
+          onSubmit={handleSubmit}
           animate={shake ? { x: [0, -10, 10, -8, 8, -4, 4, 0] } : { x: 0 }}
           transition={{ duration: 0.4 }}
-          className="flex items-center justify-center gap-2.5 sm:gap-3"
+          className="space-y-4"
         >
-          {digits.map((d, i) => (
-            <input
-              key={i}
-              ref={(el) => (inputs.current[i] = el)}
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              maxLength={1}
-              value={d}
-              onChange={(e) => handleChange(i, e.target.value)}
-              onKeyDown={(e) => handleKeyDown(i, e)}
-              onPaste={i === 0 ? handlePaste : undefined}
-              disabled={busy}
-              type="password"
-              className={cn(
-                "w-12 h-14 sm:w-14 sm:h-16 text-center font-display text-2xl",
-                "rounded-xl bg-black/40 border border-amber-900/50",
-                "text-[#FDF6E2] caret-amber-400",
-                "focus:outline-none focus:border-amber-500/80 focus:shadow-[0_0_0_3px_rgba(212,175,55,0.18)]",
-                "transition-all disabled:opacity-50",
-                error && "border-red-500/60"
-              )}
-            />
-          ))}
-        </motion.div>
+          <div className="relative">
+            <label className="block text-[10px] tracking-[0.25em] uppercase text-gold-500 mb-1.5 font-semibold pl-1">
+              Логин
+            </label>
+            <div className="relative">
+              <input
+                ref={loginInputRef}
+                type="text"
+                value={login}
+                onChange={(e) => setLogin(e.target.value)}
+                disabled={busy}
+                placeholder="ivanov"
+                required
+                className={cn(
+                  "w-full rounded-xl bg-black/45 border border-amber-900/50 pl-10 pr-4 py-3 text-sm text-[#FDF6E2] caret-amber-400 placeholder:text-stone-600 focus:outline-none focus:border-amber-500/80 focus:shadow-[0_0_0_3px_rgba(212,175,55,0.18)] transition-all disabled:opacity-50",
+                  error && "border-red-500/60"
+                )}
+              />
+              <User size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-500" />
+            </div>
+          </div>
+
+          <div className="relative">
+            <label className="block text-[10px] tracking-[0.25em] uppercase text-gold-500 mb-1.5 font-semibold pl-1">
+              Пароль
+            </label>
+            <div className="relative">
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={busy}
+                placeholder="••••"
+                required
+                className={cn(
+                  "w-full rounded-xl bg-black/45 border border-amber-900/50 pl-10 pr-4 py-3 text-sm text-[#FDF6E2] caret-amber-400 placeholder:text-stone-600 focus:outline-none focus:border-amber-500/80 focus:shadow-[0_0_0_3px_rgba(212,175,55,0.18)] transition-all disabled:opacity-50",
+                  error && "border-red-500/60"
+                )}
+              />
+              <Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-500" />
+            </div>
+          </div>
+
+          <motion.button
+            type="submit"
+            disabled={busy || !login.trim() || !password.trim()}
+            whileHover={!busy ? { scale: 1.02 } : undefined}
+            whileTap={!busy ? { scale: 0.98 } : undefined}
+            className="w-full !mt-6 py-3.5 rounded-xl font-bold uppercase tracking-wider text-xs text-stone-900 bg-gradient-to-br from-amber-300 via-gold-400 to-yellow-600 shadow-gold hover:shadow-gold-lg transition-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {busy ? (
+              <span className="inline-flex items-center gap-2">
+                <Loader2 size={12} className="animate-spin" /> Вход...
+              </span>
+            ) : (
+              "Войти"
+            )}
+          </motion.button>
+        </motion.form>
 
         <div className="mt-6 min-h-6 flex items-center justify-center text-center px-2">
           <AnimatePresence mode="wait">
-            {busy ? (
-              <motion.span
-                key="busy"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] text-amber-400/80"
-              >
-                <Loader2 size={12} className="animate-spin" /> Проверка…
-              </motion.span>
-            ) : error ? (
+            {error && (
               <motion.span
                 key="err"
                 initial={{ opacity: 0 }}
@@ -216,22 +208,14 @@ export default function PinLogin({
               >
                 <Lock size={11} className="mt-0.5 shrink-0" /> {error}
               </motion.span>
-            ) : (
-              <motion.span
-                key="hint"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="text-[11px] uppercase tracking-[0.3em] text-stone-500"
-              >
-                Введите 4-значный PIN
-              </motion.span>
             )}
           </AnimatePresence>
         </div>
 
         {hint && (
-          <p className="mt-6 text-center text-[10px] text-stone-600">{hint}</p>
+          <p className="mt-3 text-center text-[10px] text-stone-650 leading-relaxed max-w-xs mx-auto">
+            {hint}
+          </p>
         )}
       </motion.div>
     </div>

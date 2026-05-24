@@ -16,7 +16,7 @@ export default function Footer() {
         <div>
           <div className="flex items-center gap-3 mb-3">
             <img
-              src="/logo.jpg"
+              src="/logo.jpeg"
               alt="Байхан Logo"
               className="w-10 h-10 rounded-full object-cover border border-amber-500/30 dark:border-gold-500/30 shadow-md"
             />
@@ -80,7 +80,16 @@ export default function Footer() {
                 </span>
               </a>
             </li>
-            <li className="inline-flex items-center gap-2 font-medium"><Instagram size={14} className="text-amber-600/70" /> @bayhan.kg</li>
+            <li>
+              <a
+                href="https://instagram.com/bayhan.kg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 hover:text-amber-600 dark:hover:text-gold-400 transition-colors font-medium"
+              >
+                <Instagram size={14} className="text-amber-600/70" /> @bayhan.kg
+              </a>
+            </li>
           </ul>
         </div>
 

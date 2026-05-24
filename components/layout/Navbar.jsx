@@ -53,7 +53,7 @@ export default function Navbar() {
             className="font-display text-2xl tracking-widest text-stone-900 dark:text-[#FDF6E2] flex items-center gap-2.5 transition-colors"
           >
             <img
-              src="/logo.jpg"
+              src="/logo.jpeg"
               alt="Байхан Logo"
               className="w-9 h-9 rounded-full object-cover border border-amber-500/30 dark:border-gold-500/30 shadow-md"
             />

@@ -51,7 +51,7 @@ export default function WaiterLayout({ children }) {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
             <Link href="/waiter" className="flex items-center gap-2.5">
               <img
-                src="/logo.jpg"
+                src="/logo.jpeg"
                 alt="Байхан Logo"
                 className="w-8 h-8 rounded-full object-cover border border-emerald-500/35"
               />

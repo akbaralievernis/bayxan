@@ -87,7 +87,7 @@ export default function AdminLayout({ children }) {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
             <Link href="/admin" className="flex items-center gap-2.5 group no-tap-highlight">
               <img
-                src="/logo.jpg"
+                src="/logo.jpeg"
                 alt="Байхан Logo"
                 className="w-8 h-8 rounded-full object-cover border border-amber-500/30"
               />

@@ -75,7 +75,7 @@ export default function GlassSelect({
   }, [open, value, options]);
 
   return (
-    <div ref={wrapRef} className={cn("relative", className)}>
+    <div ref={wrapRef} className={cn("relative", open && "z-50", className)}>
       <button
         type="button"
         id={id}

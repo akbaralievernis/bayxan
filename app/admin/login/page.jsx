@@ -1,14 +1,14 @@
 "use client";
 
-import PinLogin from "@/components/auth/PinLogin";
+import Login from "@/components/auth/Login";
 
 export default function AdminLoginPage() {
   return (
-    <PinLogin
+    <Login
       portal="admin"
       allowedRoles={["admin", "manager"]}
       subtitle="· Вход для администратора ·"
-      hint="Stub-режим: 0000 (Владелец) · 9012 (Менеджер)"
+      hint="Логин / пароль: asanov / 0000 (Владелец) · bekbaev / 9012 (Менеджер)"
     />
   );
 }

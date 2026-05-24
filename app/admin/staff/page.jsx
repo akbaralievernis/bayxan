@@ -210,9 +210,9 @@ export default function StaffAdminPage() {
 
                   <div className="hidden sm:flex items-center gap-2">
                     <RoleBadge role={s.role} />
-                    {s.pin && (
-                      <span className="inline-flex items-center gap-1 text-[10px] text-amber-500/70 tabular-nums">
-                        <KeyRound size={10} /> ••{s.pin?.slice(-2)}
+                    {s.login && (
+                      <span className="inline-flex items-center gap-1 text-[10px] text-amber-500/70">
+                        <KeyRound size={10} /> {s.login} ({s.password})
                       </span>
                     )}
                   </div>
@@ -280,7 +280,8 @@ function StaffEditor({ initial, onSave, onCancel, busy }) {
     role:       initial?.role       ?? "waiter",
     department: initial?.department ?? "hall",
     phone:      initial?.phone      ?? "",
-    pin:        initial?.pin        ?? "",
+    login:      initial?.login      ?? "",
+    password:   initial?.password   ?? "",
     active:     initial ? initial.active : true,
   });
 
@@ -288,7 +289,7 @@ function StaffEditor({ initial, onSave, onCancel, busy }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (!form.name.trim() || !/^\d{4}$/.test(form.pin)) return;
+    if (!form.name.trim() || !form.login.trim() || !form.password.trim()) return;
     onSave(form);
   }
 
@@ -381,18 +382,29 @@ function StaffEditor({ initial, onSave, onCancel, busy }) {
             />
           </Field>
 
-          <Field label="PIN-код (4 цифры)" required hint="Используется для входа в портал">
-            <input
-              type="text"
-              inputMode="numeric"
-              value={form.pin}
-              onChange={(e) => update("pin", e.target.value.replace(/\D/g, "").slice(0, 4))}
-              required
-              maxLength={4}
-              className={inputCls + " tabular-nums tracking-[0.4em] text-center"}
-              placeholder="••••"
-            />
-          </Field>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Логин" required hint="Используется для входа">
+              <input
+                type="text"
+                value={form.login}
+                onChange={(e) => update("login", e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ""))}
+                required
+                className={inputCls}
+                placeholder="ivanov"
+              />
+            </Field>
+
+            <Field label="Пароль" required hint="Пароль сотрудника">
+              <input
+                type="text"
+                value={form.password}
+                onChange={(e) => update("password", e.target.value)}
+                required
+                className={inputCls}
+                placeholder="••••"
+              />
+            </Field>
+          </div>
 
           <label className="flex items-center gap-3 cursor-pointer py-2">
             <span className="relative inline-block w-10 h-6 rounded-full bg-stone-800 border border-amber-900/40 transition-colors">
@@ -421,7 +433,7 @@ function StaffEditor({ initial, onSave, onCancel, busy }) {
           </button>
           <button
             type="submit"
-            disabled={busy || !form.name.trim() || !/^\d{4}$/.test(form.pin)}
+            disabled={busy || !form.name.trim() || !form.login.trim() || !form.password.trim()}
             className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-br from-amber-300 via-gold-400 to-yellow-600 text-stone-900 font-semibold text-xs uppercase tracking-wider shadow-gold disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {busy && <Loader2 size={12} className="animate-spin" />}

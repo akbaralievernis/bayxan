@@ -1,17 +1,17 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import PinLogin from "@/components/auth/PinLogin";
+import Login from "@/components/auth/Login";
 import { setPosSession } from "@/lib/waiterSession";
 
 export default function CashierLoginPage() {
   const router = useRouter();
   return (
-    <PinLogin
+    <Login
       portal="cashier"
       allowedRoles={["cashier", "manager", "admin"]}
       subtitle="· Вход для кассира ·"
-      hint="Stub: 4444 (Назгуль)"
+      hint="Логин / пароль: orozova / 4444 (Кассир)"
       onSuccess={(session) => {
         setPosSession(session);
         router.replace("/cashier");

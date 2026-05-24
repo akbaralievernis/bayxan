@@ -33,16 +33,16 @@ export default function MobileSheet({ onClose }) {
         transition={{ type: "spring", damping: 30, stiffness: 280 }}
         className="absolute bottom-0 inset-x-0 glass-panel rounded-t-3xl pt-3 pb-8 px-6"
       >
-        <div className="mx-auto w-12 h-1.5 rounded-full bg-stone-300/70 mb-6" />
+        <div className="mx-auto w-12 h-1.5 rounded-full bg-stone-300/70 dark:bg-stone-700/70 mb-6" />
 
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2.5">
             <img
-              src="/logo.jpg"
+              src="/logo.jpeg"
               alt="Байхан Logo"
               className="w-9 h-9 rounded-full object-cover border border-amber-500/30 shadow-md"
             />
-            <span className="font-display text-2xl tracking-widest text-stone-100">
+            <span className="font-display text-2xl tracking-widest text-stone-900 dark:text-[#FDF6E2]">
               {RESTAURANT.name}
             </span>
           </div>
@@ -50,7 +50,7 @@ export default function MobileSheet({ onClose }) {
             type="button"
             onClick={onClose}
             aria-label={t("nav.close_aria")}
-            className="w-10 h-10 grid place-items-center rounded-full bg-white/10 border border-white/20 text-stone-300 hover:bg-white/15"
+            className="w-10 h-10 grid place-items-center rounded-full bg-stone-100 dark:bg-white/10 border border-stone-200 dark:border-white/20 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-white/15 transition-colors"
           >
             <X size={20} />
           </button>
@@ -71,10 +71,10 @@ export default function MobileSheet({ onClose }) {
               <Link
                 href={l.href}
                 onClick={onClose}
-                className="flex items-center justify-between py-4 px-2 border-b border-stone-800/40 text-stone-200 hover:text-amber-400 text-lg uppercase tracking-wider transition-colors"
+                className="flex items-center justify-between py-4 px-2 border-b border-stone-200 dark:border-stone-800/40 text-stone-850 dark:text-stone-200 hover:text-amber-600 dark:hover:text-amber-400 text-lg uppercase tracking-wider transition-colors"
               >
                 <span>{t(l.labelKey)}</span>
-                <span className="text-amber-400">→</span>
+                <span className="text-amber-500 dark:text-amber-400">→</span>
               </Link>
             </motion.div>
           ))}
@@ -88,17 +88,20 @@ export default function MobileSheet({ onClose }) {
           <Link
             href="/admin"
             onClick={onClose}
-            className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-amber-400 hover:text-amber-300 py-2.5 px-6 rounded-full border border-amber-500/20 bg-amber-500/5 hover:bg-amber-500/10 transition-all font-semibold shadow-gold-soft"
+            className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 py-2.5 px-6 rounded-full border border-amber-500/20 bg-amber-500/5 hover:bg-amber-500/10 transition-all font-semibold shadow-gold-soft"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse-glow" />
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 animate-pulse-glow" />
             Админ-панель
           </Link>
         </div>
 
-        <div className="mt-6 flex items-center justify-center text-xs text-stone-500">
-          <span className="inline-flex items-center gap-1.5 font-medium">
+        <div className="mt-6 flex items-center justify-center text-xs">
+          <a
+            href={`tel:${RESTAURANT.phone.replace(/[^\d+]/g, "")}`}
+            className="inline-flex items-center gap-1.5 font-medium text-stone-700 dark:text-stone-300 hover:text-amber-600 dark:hover:text-gold-400 transition-colors"
+          >
             <Phone size={12} className="text-amber-600/70" /> {RESTAURANT.phone}
-          </span>
+          </a>
         </div>
       </motion.div>
     </motion.div>

@@ -23,21 +23,21 @@ const DISHES = [
     img: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80",
     badge: "hit",
     span: "lg:col-span-2",
-    aspect: "aspect-[16/9]",
+    aspect: "aspect-[16/9] lg:aspect-auto lg:h-full",
   },
   {
     key: "d3",
     img: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=1200&q=80",
     badge: null,
     span: "",
-    aspect: "aspect-square",
+    aspect: "aspect-square lg:aspect-auto lg:h-full",
   },
   {
     key: "d4",
     img: "https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=1200&q=80",
     badge: "new",
     span: "",
-    aspect: "aspect-square",
+    aspect: "aspect-square lg:aspect-auto lg:h-full",
   },
 ];
 

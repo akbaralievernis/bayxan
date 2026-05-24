@@ -5,18 +5,19 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { X, Lock, ShieldCheck } from "lucide-react";
 import GlassInput from "@/components/ui/GlassInput";
-import { verifyPin } from "@/lib/api/staff";
+import { verifyCredentials } from "@/lib/api/staff";
 import { setStaffSession } from "@/lib/staffSession";
 import { cn } from "@/lib/utils";
 
 /**
- * Hidden staff-only PIN gateway.
- * Verifies the PIN against `lib/api/staff#verifyPin` and, on success,
+ * Hidden staff-only credential gateway.
+ * Verifies credentials against `lib/api/staff#verifyCredentials` and, on success,
  * persists the session to sessionStorage then routes to /staff.
  */
 export default function StaffAccessModal({ onClose }) {
   const router = useRouter();
-  const [pin, setPin] = useState("");
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
   const [phase, setPhase] = useState("idle"); // idle | accessing | denied | granted
   const inputRef = useRef(null);
 
@@ -39,39 +40,23 @@ export default function StaffAccessModal({ onClose }) {
     return () => { document.body.style.overflow = prev; };
   }, []);
 
-  // Auto-submit when 4 digits entered
-  useEffect(() => {
-    if (pin.length !== 4 || phase !== "idle") return;
-    let cancelled = false;
-    let resetTimer;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!login.trim() || !password.trim() || phase !== "idle") return;
 
-    (async () => {
-      setPhase("accessing");
-      const result = await verifyPin(pin);
-      if (cancelled) return;
+    setPhase("accessing");
+    const result = await verifyCredentials(login.trim(), password.trim());
 
-      if (result.ok) {
-        setStaffSession(result.session);
-        setPhase("granted");
-        // Brief celebratory beat, then route into the portal.
-        resetTimer = setTimeout(() => router.push("/staff"), 650);
-      } else {
-        setPhase("denied");
-        setPin("");
-        resetTimer = setTimeout(() => setPhase("idle"), 1400);
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-      if (resetTimer) clearTimeout(resetTimer);
-    };
-  }, [pin, phase, router]);
-
-  const handleChange = (e) => {
-    // digits only, max 4
-    const v = e.target.value.replace(/\D/g, "").slice(0, 4);
-    setPin(v);
+    if (result.ok) {
+      setStaffSession(result.session);
+      setPhase("granted");
+      // Brief celebratory beat, then route into the portal.
+      setTimeout(() => router.push("/staff"), 650);
+    } else {
+      setPhase("denied");
+      setPassword("");
+      setTimeout(() => setPhase("idle"), 1400);
+    }
   };
 
   const accessing = phase === "accessing";
@@ -114,7 +99,7 @@ export default function StaffAccessModal({ onClose }) {
           type="button"
           onClick={onClose}
           aria-label="Закрыть"
-          className="absolute top-3 right-3 w-9 h-9 grid place-items-center rounded-full text-stone-400 hover:text-amber-600 hover:bg-stone-100 transition-colors"
+          className="absolute top-3 right-3 w-9 h-9 grid place-items-center rounded-full text-stone-400 hover:text-amber-600 hover:bg-stone-100 dark:hover:bg-stone-850/50 transition-colors"
         >
           <X size={16} />
         </button>
@@ -130,7 +115,7 @@ export default function StaffAccessModal({ onClose }) {
               ? "bg-amber-100 border-amber-300 text-amber-800 shadow-[0_4px_16px_rgba(212,175,55,0.2)]"
               : denied
               ? "bg-red-500/15 border-red-400/60"
-              : "bg-stone-100 border-stone-200 text-stone-600"
+              : "bg-stone-100 dark:bg-stone-900 border-stone-200 dark:border-stone-800 text-stone-600 dark:text-stone-300"
           )}
         >
           {accessing || granted ? (
@@ -145,7 +130,7 @@ export default function StaffAccessModal({ onClose }) {
         </motion.div>
 
         {/* Title */}
-        <h2 className="font-display text-2xl text-stone-800 mb-1.5">
+        <h2 className="font-display text-2xl text-stone-800 dark:text-[#FDF6E2] mb-1.5">
           {granted
             ? "Доступ разрешён"
             : accessing
@@ -158,59 +143,47 @@ export default function StaffAccessModal({ onClose }) {
           {granted
             ? "Открываем портал смен…"
             : accessing
-            ? "Проверяем код в системе…"
+            ? "Проверяем данные в системе…"
             : denied
             ? "Попробуйте ещё раз."
-            : "Введите 4-значный PIN-код, выданный администратором."}
+            : "Введите ваши логин и пароль для входа в портал смен."}
         </p>
 
-        {/* PIN input */}
-        <div className="relative">
+        {/* Login Form */}
+        <form onSubmit={handleSubmit} className="space-y-4 text-left">
           <GlassInput
             ref={inputRef}
-            label="PIN-код"
-            type="password"
-            inputMode="numeric"
-            autoComplete="off"
-            value={pin}
-            onChange={handleChange}
+            label="Логин"
+            type="text"
+            autoComplete="username"
+            value={login}
+            onChange={(e) => setLogin(e.target.value)}
             disabled={accessing || granted}
-            maxLength={4}
-            className={cn(
-              "text-center text-3xl font-display tracking-[0.6em] pl-6",
-              "tabular-nums caret-amber-500"
-            )}
+            required
+            placeholder="ivanov"
           />
 
-          {/* Loading bar */}
-          {(accessing || granted) && (
-            <motion.div
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 1.5, ease: "easeInOut" }}
-              style={{ originX: 0 }}
-              className="absolute left-1 right-1 -bottom-0.5 h-0.5 bg-amber-500 shadow-[0_0_12px_rgba(212,175,55,0.5)] rounded-full"
-            />
-          )}
-        </div>
+          <GlassInput
+            label="Пароль"
+            type="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={accessing || granted}
+            required
+            placeholder="••••"
+          />
 
-        {/* Tiny segment dots showing entry progress */}
-        <div className="flex items-center justify-center gap-2 mt-5">
-          {[0, 1, 2, 3].map((i) => (
-            <motion.span
-              key={i}
-              animate={{
-                scale: pin.length > i ? 1.15 : 1,
-                opacity: pin.length > i ? 1 : 0.3,
-              }}
-              transition={{ type: "spring", stiffness: 380, damping: 18 }}
-              className={cn(
-                "w-2 h-2 rounded-full",
-                pin.length > i ? "bg-amber-500 shadow-[0_0_8px_rgba(212,175,55,0.4)]" : "bg-stone-200"
-              )}
-            />
-          ))}
-        </div>
+          <motion.button
+            type="submit"
+            disabled={accessing || granted || !login.trim() || !password.trim()}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full !mt-6 py-3 rounded-xl font-bold uppercase tracking-wider text-xs text-white dark:text-stone-900 bg-amber-600 dark:bg-gradient-to-br dark:from-amber-300 dark:via-gold-400 dark:to-yellow-600 shadow-gold hover:shadow-gold-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {accessing ? "Вход..." : "Войти"}
+          </motion.button>
+        </form>
 
         <p className="mt-7 text-[10px] uppercase tracking-[0.3em] text-stone-400">
           · Bayhan Staff Portal · v0.1 ·
