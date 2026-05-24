@@ -1,12 +1,14 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ShieldCheck, LogOut } from "lucide-react";
+import { ShieldCheck, LogOut, Calendar, Utensils, Wallet } from "lucide-react";
 import { getStaffSession, clearStaffSession } from "@/lib/staffSession";
+import { clearPosSession } from "@/lib/waiterSession";
 import { RESTAURANT } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 
 const StaffSessionContext = createContext(null);
 
@@ -16,6 +18,7 @@ export function useStaffSession() {
 
 export default function StaffLayout({ children }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [session, setSession] = useState(undefined); // undefined = still checking
 
   // Auth gate
@@ -48,6 +51,7 @@ export default function StaffLayout({ children }) {
 
   function handleLogout() {
     clearStaffSession();
+    clearPosSession();
     router.replace("/team");
   }
 
@@ -73,6 +77,28 @@ export default function StaffLayout({ children }) {
                 </span>
               </span>
             </Link>
+
+            {/* Section nav — visible to roles that have multiple pages */}
+            <nav className="hidden md:flex items-center gap-1.5 mr-auto pl-6">
+              {sectionsFor(session).map((s) => {
+                const active = pathname === s.href || (s.href !== "/staff" && pathname?.startsWith(s.href));
+                return (
+                  <Link
+                    key={s.href}
+                    href={s.href}
+                    className={cn(
+                      "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] uppercase tracking-wider border transition-colors",
+                      active
+                        ? "bg-amber-500/15 text-amber-700 border-amber-500/50"
+                        : "text-stone-500 border-stone-200 hover:border-amber-400/40"
+                    )}
+                  >
+                    <s.icon size={12} />
+                    {s.label}
+                  </Link>
+                );
+              })}
+            </nav>
 
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="hidden sm:block text-right leading-tight">
@@ -108,4 +134,15 @@ export default function StaffLayout({ children }) {
       </div>
     </StaffSessionContext.Provider>
   );
+}
+
+function sectionsFor(session) {
+  const exchange = { href: "/staff",   label: "Биржа смен", icon: Calendar };
+  const hall     = { href: "/waiter",  label: "Зал",        icon: Utensils };
+  const cashbox  = { href: "/cashier", label: "Касса",      icon: Wallet };
+  const role = session?.role;
+  if (role === "waiter")  return [hall, exchange];
+  if (role === "cashier") return [cashbox, exchange];
+  if (role === "manager" || role === "admin" || session?.is_admin) return [hall, cashbox, exchange];
+  return [exchange];
 }

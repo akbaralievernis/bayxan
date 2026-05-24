@@ -7,6 +7,7 @@ import { X, Lock, ShieldCheck } from "lucide-react";
 import GlassInput from "@/components/ui/GlassInput";
 import { verifyCredentials } from "@/lib/api/staff";
 import { setStaffSession } from "@/lib/staffSession";
+import { setPosSession } from "@/lib/waiterSession";
 import { cn } from "@/lib/utils";
 
 /**
@@ -48,10 +49,13 @@ export default function StaffAccessModal({ onClose }) {
     const result = await verifyCredentials(login.trim(), password.trim());
 
     if (result.ok) {
+      // Mirror the session into both stores so /staff, /waiter and /cashier
+      // all accept this login without an extra round of credential prompts.
       setStaffSession(result.session);
+      setPosSession(result.session);
       setPhase("granted");
-      // Brief celebratory beat, then route into the portal.
-      setTimeout(() => router.push("/staff"), 650);
+      const target = destinationForRole(result.session);
+      setTimeout(() => router.push(target), 650);
     } else {
       setPhase("denied");
       setPassword("");
@@ -191,4 +195,19 @@ export default function StaffAccessModal({ onClose }) {
       </motion.div>
     </motion.div>
   );
+}
+
+function destinationForRole(session) {
+  if (session?.is_admin) return "/admin";
+  switch (session?.role) {
+    case "admin":
+    case "manager":
+      return "/admin";
+    case "waiter":
+      return "/waiter";
+    case "cashier":
+      return "/cashier";
+    default:
+      return "/staff";
+  }
 }
