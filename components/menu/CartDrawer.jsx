@@ -69,17 +69,17 @@ export default function CartDrawer() {
             aria-label="Корзина"
             className={cn(
               "fixed top-0 right-0 z-[60] h-full w-full sm:w-[420px]",
-              "flex flex-col bg-ivory/95 backdrop-blur-xl border-l border-white/80",
-              "shadow-[-24px_0_60px_-12px_rgba(60,40,10,0.15)]"
+              "flex flex-col bg-ivory/95 dark:bg-[#120D0A]/95 backdrop-blur-xl border-l border-white/80 dark:border-gold-500/15",
+              "shadow-[-24px_0_60px_-12px_rgba(60,40,10,0.15)] dark:shadow-[-24px_0_60px_-12px_rgba(0,0,0,0.5)]"
             )}
           >
             {/* Header */}
-            <header className="flex items-center justify-between px-5 py-4 border-b border-stone-200/70 bg-white/60">
+            <header className="flex items-center justify-between px-5 py-4 border-b border-stone-200/70 dark:border-gold-500/15 bg-white/60 dark:bg-stone-900/50">
               <div className="flex items-center gap-3">
-                <ShoppingBag size={18} className="text-amber-600" />
+                <ShoppingBag size={18} className="text-amber-600 dark:text-gold-400" />
                 <div>
-                  <h2 className="font-display text-lg text-stone-900 leading-tight">Корзина</h2>
-                  <p className="text-[11px] text-stone-500 uppercase tracking-[0.25em]">
+                  <h2 className="font-display text-lg text-stone-900 dark:text-[#FDF6E2] leading-tight">Корзина</h2>
+                  <p className="text-[11px] text-stone-500 dark:text-stone-400 uppercase tracking-[0.25em]">
                     {count > 0 ? `${count} поз.` : "Пусто"}
                   </p>
                 </div>
@@ -90,7 +90,7 @@ export default function CartDrawer() {
                   <button
                     type="button"
                     onClick={clearCart}
-                    className="px-2 py-1 text-[11px] uppercase tracking-wider text-stone-500 hover:text-red-500 transition-colors"
+                    className="px-2 py-1 text-[11px] uppercase tracking-wider text-stone-500 dark:text-stone-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
                     aria-label="Очистить корзину"
                   >
                     Очистить
@@ -100,7 +100,7 @@ export default function CartDrawer() {
                   type="button"
                   onClick={closeDrawer}
                   aria-label="Закрыть корзину"
-                  className="w-9 h-9 grid place-items-center rounded-full text-stone-600 hover:text-amber-700 hover:bg-amber-50"
+                  className="w-9 h-9 grid place-items-center rounded-full text-stone-600 dark:text-stone-300 hover:text-amber-700 dark:hover:text-gold-300 hover:bg-amber-50 dark:hover:bg-stone-800/60 transition-colors"
                 >
                   <X size={18} />
                 </button>
@@ -120,10 +120,10 @@ export default function CartDrawer() {
                         initial="hidden"
                         animate="show"
                         exit="exit"
-                        className="flex gap-3 p-2.5 rounded-2xl bg-white/70 border border-white/90 shadow-sm"
+                        className="flex gap-3 p-2.5 rounded-2xl bg-white/70 dark:bg-stone-900/50 border border-white/90 dark:border-gold-500/15 shadow-sm"
                       >
                         {/* thumb */}
-                        <div className="relative w-16 h-16 shrink-0 rounded-xl overflow-hidden bg-stone-100">
+                        <div className="relative w-16 h-16 shrink-0 rounded-xl overflow-hidden bg-stone-100 dark:bg-stone-800">
                           {item.imagePlaceholder && (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
@@ -137,13 +137,13 @@ export default function CartDrawer() {
                         {/* meta */}
                         <div className="flex-1 min-w-0 flex flex-col justify-between">
                           <div className="flex items-start justify-between gap-2">
-                            <h3 className="text-sm text-stone-900 leading-snug line-clamp-2">
+                            <h3 className="text-sm text-stone-900 dark:text-[#FDF6E2] leading-snug line-clamp-2">
                               {item.name}
                             </h3>
                             <button
                               type="button"
                               onClick={() => removeItem(item.id)}
-                              className="shrink-0 text-stone-400 hover:text-red-500 transition-colors"
+                              className="shrink-0 text-stone-400 dark:text-stone-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
                               aria-label="Удалить"
                             >
                               <Trash2 size={14} />
@@ -152,11 +152,11 @@ export default function CartDrawer() {
 
                           <div className="flex items-center justify-between mt-1.5">
                             {/* qty stepper */}
-                            <div className="inline-flex items-center gap-1 bg-white rounded-full border border-stone-200 p-0.5 shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)]">
+                            <div className="inline-flex items-center gap-1 bg-white dark:bg-stone-800/80 rounded-full border border-stone-200 dark:border-stone-700/60 p-0.5 shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)]">
                               <StepBtn onClick={() => decrement(item.id)} ariaLabel="Уменьшить">
                                 <Minus size={12} strokeWidth={3} />
                               </StepBtn>
-                              <span className="px-2 text-sm font-medium text-stone-800 tabular-nums min-w-[1.25rem] text-center">
+                              <span className="px-2 text-sm font-medium text-stone-800 dark:text-[#FDF6E2] tabular-nums min-w-[1.25rem] text-center">
                                 {item.quantity}
                               </span>
                               <StepBtn onClick={() => increment(item.id)} ariaLabel="Увеличить">
@@ -164,7 +164,7 @@ export default function CartDrawer() {
                               </StepBtn>
                             </div>
 
-                            <div className="font-display font-bold text-amber-700 text-sm tabular-nums">
+                            <div className="font-display font-bold text-amber-700 dark:text-gold-300 text-sm tabular-nums">
                               {formatKGS(item.price * item.quantity)}
                             </div>
                           </div>
@@ -178,18 +178,15 @@ export default function CartDrawer() {
 
             {/* Footer */}
             {items.length > 0 && (
-              <footer className="border-t border-stone-200/70 bg-white/70 px-5 py-4 space-y-3">
+              <footer className="border-t border-stone-200/70 dark:border-gold-500/15 bg-white/70 dark:bg-stone-900/50 px-5 py-4 space-y-3">
                 <div className="flex items-baseline justify-between">
-                  <span className="text-xs uppercase tracking-[0.25em] text-stone-500">Итого</span>
-                  <motion.span
+                  <span className="text-xs uppercase tracking-[0.25em] text-stone-500 dark:text-stone-400">Итого</span>
+                  <span
                     key={total}
-                    initial={{ scale: 1.06, color: "#B8941F" }}
-                    animate={{ scale: 1, color: "#1c1917" }}
-                    transition={{ duration: 0.35 }}
-                    className="font-display text-2xl tabular-nums"
+                    className="font-display text-2xl tabular-nums text-stone-900 dark:text-[#FDF6E2]"
                   >
                     {formatKGS(total)}
-                  </motion.span>
+                  </span>
                 </div>
 
                 <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
@@ -199,7 +196,7 @@ export default function CartDrawer() {
                     className={cn(
                       "w-full inline-flex items-center justify-center gap-2",
                       "px-5 py-3.5 rounded-full",
-                      "bg-gradient-to-br from-amber-300 via-gold-400 to-yellow-600 text-white font-bold uppercase tracking-wider text-sm",
+                      "bg-gradient-to-br from-amber-300 via-gold-400 to-yellow-600 text-white dark:text-stone-900 font-bold uppercase tracking-wider text-sm",
                       "shadow-gold hover:shadow-gold-lg transition-shadow"
                     )}
                   >
@@ -208,7 +205,7 @@ export default function CartDrawer() {
                   </Link>
                 </motion.div>
 
-                <p className="text-center text-[11px] text-stone-400">
+                <p className="text-center text-[11px] text-stone-400 dark:text-stone-500">
                   Заказ привязывается к бронированию столика.
                 </p>
               </footer>
@@ -227,7 +224,7 @@ function StepBtn({ children, onClick, ariaLabel }) {
       onClick={onClick}
       whileTap={{ scale: 0.85 }}
       aria-label={ariaLabel}
-      className="w-6 h-6 grid place-items-center rounded-full text-stone-600 hover:text-amber-700 hover:bg-amber-50"
+      className="w-6 h-6 grid place-items-center rounded-full text-stone-600 dark:text-stone-300 hover:text-amber-700 dark:hover:text-gold-300 hover:bg-amber-50 dark:hover:bg-stone-700/60 transition-colors"
     >
       {children}
     </motion.button>
@@ -242,14 +239,14 @@ function EmptyState({ onClose }) {
           initial={{ scale: 0.85, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.05, type: "spring" }}
-          className="mx-auto w-20 h-20 rounded-full grid place-items-center border border-gold-300/70 bg-white/80 shadow-gold-soft"
+          className="mx-auto w-20 h-20 rounded-full grid place-items-center border border-gold-300/70 dark:border-gold-500/40 bg-white/80 dark:bg-stone-900/60 shadow-gold-soft"
         >
-          <ShoppingBag size={28} className="text-amber-600" />
+          <ShoppingBag size={28} className="text-amber-600 dark:text-gold-400" />
         </motion.div>
 
         <div className="space-y-1.5">
-          <h3 className="font-display text-xl text-stone-900">Корзина пуста</h3>
-          <p className="text-sm text-stone-500 leading-relaxed">
+          <h3 className="font-display text-xl text-stone-900 dark:text-[#FDF6E2]">Корзина пуста</h3>
+          <p className="text-sm text-stone-500 dark:text-stone-400 leading-relaxed">
             Добавьте блюда из меню, чтобы оформить заказ к столу.
           </p>
         </div>
@@ -257,7 +254,7 @@ function EmptyState({ onClose }) {
         <Link
           href="/menu"
           onClick={onClose}
-          className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full border border-gold-400/50 text-amber-700 text-xs uppercase tracking-wider hover:bg-amber-50/70 hover:border-gold-500/80 hover:shadow-gold-soft transition-all"
+          className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full border border-gold-400/50 dark:border-gold-500/40 text-amber-700 dark:text-gold-300 text-xs uppercase tracking-wider hover:bg-amber-50/70 dark:hover:bg-gold-500/10 hover:border-gold-500/80 dark:hover:border-gold-400 hover:shadow-gold-soft transition-all"
         >
           К меню <ArrowRight size={14} />
         </Link>

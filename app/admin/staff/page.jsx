@@ -14,6 +14,8 @@ import {
   KeyRound,
   Phone,
   Briefcase,
+  Copy,
+  Check,
 } from "lucide-react";
 import {
   listStaff,
@@ -210,11 +212,7 @@ export default function StaffAdminPage() {
 
                   <div className="hidden sm:flex items-center gap-2">
                     <RoleBadge role={s.role} />
-                    {s.login && (
-                      <span className="inline-flex items-center gap-1 text-[10px] text-amber-500/70">
-                        <KeyRound size={10} /> {s.login} ({s.password})
-                      </span>
-                    )}
+                    {s.login && <CredentialChip login={s.login} password={s.password} />}
                   </div>
 
                   <div className="flex items-center gap-1.5">
@@ -250,9 +248,59 @@ export default function StaffAdminPage() {
 function Avatar({ name }) {
   const initials = name ? name.split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("") : "?";
   return (
-    <div className="w-10 h-10 rounded-full grid place-items-center bg-gradient-to-br from-amber-300 to-yellow-700 text-stone-900 text-sm font-bold shadow-gold-soft">
+    <div className="w-10 h-10 rounded-full grid place-items-center bg-gradient-to-br from-amber-300 to-yellow-700 text-stone-900 text-sm font-bold shadow-gold-soft select-none">
       {initials || "?"}
     </div>
+  );
+}
+
+/** Credential chip — masks the password by default and supports per-row reveal + copy.
+ *  Prevents shoulder-surfing in admin/staff while preserving quick handoff to staff. */
+function CredentialChip({ login, password }) {
+  const [reveal, setReveal] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  async function copyAll(e) {
+    e?.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(`${login} / ${password}`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1400);
+    } catch {
+      // Best-effort — clipboard may be blocked in some contexts
+    }
+  }
+
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-900/40 bg-black/30 pl-2 pr-1 py-0.5">
+      <KeyRound size={10} className="text-amber-500/80 shrink-0" />
+      <span className="text-[11px] tabular-nums text-amber-300/90 font-medium">{login}</span>
+      <span className="text-stone-600 select-none">·</span>
+      <span className={cn(
+        "text-[11px] tabular-nums",
+        reveal ? "text-amber-200" : "text-stone-500 tracking-[2px]"
+      )}>
+        {reveal ? password : "••••"}
+      </span>
+      <button
+        type="button"
+        onClick={(e) => { e.stopPropagation(); setReveal((v) => !v); }}
+        title={reveal ? "Скрыть пароль" : "Показать пароль"}
+        aria-label={reveal ? "Скрыть пароль" : "Показать пароль"}
+        className="ml-0.5 w-6 h-6 grid place-items-center rounded-full text-stone-400 hover:text-amber-300 hover:bg-amber-500/10 transition-colors"
+      >
+        {reveal ? <EyeOff size={11} /> : <Eye size={11} />}
+      </button>
+      <button
+        type="button"
+        onClick={copyAll}
+        title={copied ? "Скопировано" : "Скопировать логин и пароль"}
+        aria-label="Скопировать логин и пароль"
+        className="w-6 h-6 grid place-items-center rounded-full text-stone-400 hover:text-amber-300 hover:bg-amber-500/10 transition-colors"
+      >
+        {copied ? <Check size={11} className="text-green-400" /> : <Copy size={11} />}
+      </button>
+    </span>
   );
 }
 
@@ -446,7 +494,7 @@ function StaffEditor({ initial, onSave, onCancel, busy }) {
 }
 
 const inputCls =
-  "w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-amber-900/40 text-sm text-[#FDF6E2] placeholder:text-stone-500 focus:outline-none focus:border-amber-500/60 focus:shadow-[0_0_0_3px_rgba(212,175,55,0.12)] transition-all";
+  "w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-amber-900/40 text-sm text-[#FDF6E2] placeholder:text-stone-500 focus:outline-none focus:border-amber-500/60 focus:shadow-[0_0_0_3px_rgba(212,175,55,0.12)] transition-all [color-scheme:dark]";
 
 function Field({ label, hint, required, children }) {
   return (

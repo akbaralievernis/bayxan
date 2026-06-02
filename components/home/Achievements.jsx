@@ -24,7 +24,7 @@ export default function Achievements() {
   return (
     <section
       ref={ref}
-      className="relative bg-ivory border-y border-amber-200/50"
+      className="relative bg-ivory dark:bg-[#120D0A] border-y border-amber-200/50 dark:border-gold-500/15"
     >
       <div
         aria-hidden
@@ -34,7 +34,7 @@ export default function Achievements() {
             "linear-gradient(180deg, transparent 0%, rgba(212,175,55,0.06) 50%, transparent 100%)",
         }}
       />
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16 grid grid-cols-2 md:grid-cols-4 gap-px bg-amber-200/40 rounded-3xl overflow-hidden border border-amber-200/60 shadow-glass my-12 sm:my-16">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16 grid grid-cols-2 md:grid-cols-4 gap-px bg-amber-200/40 dark:bg-gold-500/15 rounded-3xl overflow-hidden border border-amber-200/60 dark:border-gold-500/20 shadow-glass my-12 sm:my-16">
         {items.map((item, i) => (
           <motion.div
             key={item.l}
@@ -45,12 +45,12 @@ export default function Achievements() {
               delay: i * 0.1,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="bg-white/80 backdrop-blur-sm px-5 py-6 sm:px-7 sm:py-9 text-center group"
+            className="bg-white/80 dark:bg-stone-900/50 backdrop-blur-sm px-5 py-6 sm:px-7 sm:py-9 text-center group"
           >
-            <div className="font-display text-4xl sm:text-5xl lg:text-6xl text-stone-900 tracking-tight">
+            <div className="font-display text-4xl sm:text-5xl lg:text-6xl text-stone-900 dark:text-[#FDF6E2] tracking-tight">
               <Counter target={item.k} start={inView} />
             </div>
-            <div className="mt-3 text-[10px] sm:text-[11px] uppercase tracking-[0.28em] text-amber-700/80">
+            <div className="mt-3 text-[10px] sm:text-[11px] uppercase tracking-[0.28em] text-amber-700/80 dark:text-gold-400/80">
               {item.l}
             </div>
             <div className="mt-3 mx-auto w-8 h-px bg-gold-400/70 group-hover:w-16 transition-all duration-500" />

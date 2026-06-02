@@ -45,7 +45,7 @@ export default function Signatures() {
   const t = useT();
 
   return (
-    <section className="relative bg-ivory overflow-hidden">
+    <section className="relative bg-ivory dark:bg-[#120D0A] overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-20 sm:py-28 lg:py-32">
         {/* Section header */}
         <motion.div
@@ -56,21 +56,21 @@ export default function Signatures() {
           className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12 sm:mb-16"
         >
           <div className="max-w-2xl">
-            <p className="text-[11px] uppercase tracking-[0.35em] text-amber-700 mb-3 font-semibold">
+            <p className="text-[11px] uppercase tracking-[0.35em] text-amber-700 dark:text-gold-400 mb-3 font-semibold">
               {t("sig.eyebrow")}
             </p>
-            <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.02] tracking-tight text-stone-900">
+            <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.02] tracking-tight text-stone-900 dark:text-[#FDF6E2]">
               {t("sig.heading.l1")}<br />
               <span className="gold-text italic">{t("sig.heading.l2")}</span>
             </h2>
-            <p className="mt-5 max-w-xl text-stone-600 leading-relaxed">
+            <p className="mt-5 max-w-xl text-stone-600 dark:text-stone-300 leading-relaxed">
               {t("sig.tagline")}
             </p>
           </div>
 
           <Link
             href="/menu"
-            className="self-start inline-flex items-center gap-2 px-5 py-3 rounded-full border border-gold-400/60 text-amber-800 text-xs uppercase tracking-wider hover:bg-amber-50/70 hover:border-gold-500 hover:shadow-gold-soft transition-all group"
+            className="self-start inline-flex items-center gap-2 px-5 py-3 rounded-full border border-gold-400/60 text-amber-800 dark:text-gold-300 text-xs uppercase tracking-wider hover:bg-amber-50/70 dark:hover:bg-gold-500/10 hover:border-gold-500 dark:hover:border-gold-400 hover:shadow-gold-soft transition-all group"
           >
             {t("sig.cta")}
             <ArrowUpRight size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />

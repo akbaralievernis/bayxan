@@ -79,6 +79,49 @@ export default function Hero() {
         />
       </motion.div>
 
+      {/* Oversized brand mark — sits in the upper-right, balances the heading
+          on the lower-left and reinforces brand presence at first paint. */}
+      <motion.div
+        aria-hidden
+        initial={{ opacity: 0, scale: 0.9, rotate: -3 }}
+        animate={{ opacity: 1, scale: 1, rotate: 0 }}
+        transition={{ delay: 0.25, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        style={{ y: fgY }}
+        className="pointer-events-none absolute top-24 right-4 sm:top-28 sm:right-10 lg:top-32 lg:right-16 z-[5] hidden sm:block"
+      >
+        <div className="relative">
+          {/* Soft gold radial halo */}
+          <div
+            aria-hidden
+            className="absolute inset-0 -m-10 rounded-full blur-3xl opacity-70"
+            style={{
+              background:
+                "radial-gradient(circle, rgba(212,175,55,0.45), transparent 65%)",
+            }}
+          />
+          <img
+            src="/logo.jpeg"
+            alt=""
+            className="relative w-44 h-44 md:w-56 md:h-56 lg:w-72 lg:h-72 rounded-full object-cover border-2 border-white/70 shadow-[0_20px_60px_rgba(60,40,10,0.35)] ring-1 ring-amber-300/50"
+          />
+          {/* Subtle rotating gold band */}
+          <motion.div
+            aria-hidden
+            animate={{ rotate: 360 }}
+            transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+            className="absolute -inset-3 rounded-full"
+            style={{
+              background:
+                "conic-gradient(from 0deg, rgba(212,175,55,0) 0%, rgba(212,175,55,0.4) 25%, rgba(212,175,55,0) 50%, rgba(212,175,55,0.35) 75%, rgba(212,175,55,0) 100%)",
+              WebkitMask:
+                "radial-gradient(circle, transparent 60%, black 61%, black 64%, transparent 65%)",
+              mask:
+                "radial-gradient(circle, transparent 60%, black 61%, black 64%, transparent 65%)",
+            }}
+          />
+        </div>
+      </motion.div>
+
       {/* Content — sits in the lower third of the viewport. Heading sizes
           shrunk so three lines + tagline + CTA + stats fit on a 100svh hero
           without clipping the top line off-screen. */}

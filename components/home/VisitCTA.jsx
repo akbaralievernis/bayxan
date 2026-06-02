@@ -28,10 +28,11 @@ export default function VisitCTA() {
       ref={ref}
       className="relative bg-[#0F0A07] text-[#FDF6E2] overflow-hidden"
     >
-      {/* Top fade — handoff from light Testimonials above */}
+      {/* Top fade — handoff from Testimonials above (ivory in light theme,
+          chocolate in dark theme). */}
       <div
         aria-hidden
-        className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-[#FDFBF7] to-transparent pointer-events-none"
+        className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-[#FDFBF7] dark:from-[#120D0A] to-transparent pointer-events-none"
       />
 
       {/* Ambient copper glow with subtle scroll parallax */}

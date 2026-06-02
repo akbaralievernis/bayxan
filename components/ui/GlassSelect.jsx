@@ -26,10 +26,22 @@ export default function GlassSelect({
   const id = useId();
   const [open, setOpen] = useState(false);
   const [focusIdx, setFocusIdx] = useState(-1);
+  const [openUp, setOpenUp] = useState(false);
   const wrapRef = useRef(null);
   const listRef = useRef(null);
 
   const selected = options.find((o) => o.id === value);
+
+  // Decide open direction based on available viewport space.
+  // Estimate panel height: ~44px per option, capped by max-h-64 (256px).
+  useEffect(() => {
+    if (!open || !wrapRef.current) return;
+    const rect = wrapRef.current.getBoundingClientRect();
+    const estimated = Math.min(options.length * 44 + 16, 256);
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    setOpenUp(spaceBelow < estimated + 12 && spaceAbove > spaceBelow);
+  }, [open, options.length]);
 
   // Click outside
   useEffect(() => {
@@ -120,12 +132,13 @@ export default function GlassSelect({
           <motion.ul
             ref={listRef}
             role="listbox"
-            initial={{ opacity: 0, y: -6, scale: 0.98 }}
+            initial={{ opacity: 0, y: openUp ? 6 : -6, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -6, scale: 0.98 }}
+            exit={{ opacity: 0, y: openUp ? 6 : -6, scale: 0.98 }}
             transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
             className={cn(
-              "absolute z-[70] top-full left-0 right-0 mt-2",
+              "absolute z-[70] left-0 right-0",
+              openUp ? "bottom-full mb-2" : "top-full mt-2",
               "max-h-64 overflow-y-auto py-1",
               "rounded-xl bg-white dark:bg-[#1A1410] backdrop-blur-xl border border-stone-200 dark:border-gold-500/30",
               "shadow-[0_12px_40px_rgba(60,40,10,0.18)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.7)]"

@@ -37,10 +37,11 @@ export default function Spaces() {
       ref={ref}
       className="relative bg-[#120D0A] text-[#FDF6E2] overflow-hidden"
     >
-      {/* Top fade — handoff from light Signatures section above */}
+      {/* Top fade — handoff from Signatures section above (ivory in light theme,
+          chocolate in dark theme so the seam disappears either way). */}
       <div
         aria-hidden
-        className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-[#FDFBF7] to-transparent pointer-events-none z-20"
+        className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-[#FDFBF7] dark:from-[#120D0A] to-transparent pointer-events-none z-20"
       />
 
       {/* Background image with crossfade between active spaces + parallax */}

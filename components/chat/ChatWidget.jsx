@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Sparkles } from "lucide-react";
+import { MessageCircle, X, Send, Sparkles, CalendarCheck, UtensilsCrossed, Phone } from "lucide-react";
 import { useChatStore } from "@/store/useChatStore";
 import { fetchMessages, sendMessage, subscribeMessages } from "@/lib/api/chat";
 import { cn } from "@/lib/utils";
@@ -11,9 +11,16 @@ import { RESTAURANT } from "@/lib/constants";
 const WELCOME = {
   id: "welcome",
   sender: "host",
-  body: `Добро пожаловать в ${RESTAURANT.name}. Чем мы можем вам помочь — забронировать стол, посмотреть меню или что-то другое?`,
+  body: `Добро пожаловать в ${RESTAURANT.name}. Чем мы можем вам помочь — забронировать стол, посмотреть меню или подсказать что-то ещё?`,
   created_at: new Date().toISOString(),
 };
+
+// Quick-reply chips shown when the conversation has only the welcome message.
+const QUICK_REPLIES = [
+  { id: "book",  label: "Забронировать стол",      icon: CalendarCheck },
+  { id: "menu",  label: "Посмотреть меню",         icon: UtensilsCrossed },
+  { id: "call",  label: "Заказать обратный звонок", icon: Phone },
+];
 
 export default function ChatWidget() {
   const {
@@ -24,6 +31,7 @@ export default function ChatWidget() {
 
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
+  const [hostTyping, setHostTyping] = useState(false);
   const scrollerRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -64,13 +72,9 @@ export default function ChatWidget() {
     if (open) setTimeout(() => inputRef.current?.focus(), 250);
   }, [open]);
 
-  async function handleSend(e) {
-    e?.preventDefault();
-    const body = text.trim();
+  async function sendBody(body) {
     if (!body || sending) return;
-
     setSending(true);
-    setText("");
 
     const local = {
       id: `local-${Date.now()}`,
@@ -81,11 +85,33 @@ export default function ChatWidget() {
     };
     pushMessage(local);
 
+    // Show a brief "host is typing" hint so the chat feels staffed even when
+    // no live agent is on shift. The simulated reply hint clears itself.
+    setHostTyping(true);
+    setTimeout(() => setHostTyping(false), 2200);
+
     try {
       await sendMessage({ threadId, body, sender: "guest" });
     } finally {
       setSending(false);
     }
+  }
+
+  async function handleSend(e) {
+    e?.preventDefault();
+    const body = text.trim();
+    if (!body) return;
+    setText("");
+    await sendBody(body);
+  }
+
+  function handleQuickReply(id) {
+    const map = {
+      book: "Здравствуйте! Хочу забронировать стол.",
+      menu: "Подскажите, пожалуйста, что есть в меню сегодня?",
+      call: "Перезвоните мне, пожалуйста.",
+    };
+    sendBody(map[id] || "");
   }
 
   return (
@@ -225,6 +251,46 @@ export default function ChatWidget() {
               {messages.map((m) => (
                 <Bubble key={m.id} message={m} />
               ))}
+
+              {/* Typing indicator from "host" — appears for ~2s after guest sends */}
+              <AnimatePresence>
+                {hostTyping && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 4 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex justify-start"
+                  >
+                    <div className="inline-flex items-center gap-1 px-3.5 py-2.5 rounded-2xl rounded-bl-md bg-white/85 dark:bg-stone-800/80 border border-stone-200/70 dark:border-stone-700/50">
+                      <Dot delay={0} />
+                      <Dot delay={0.15} />
+                      <Dot delay={0.3} />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Quick replies — only while conversation is essentially empty */}
+              {messages.length <= 1 && !hostTyping && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.3 }}
+                  className="pt-2 flex flex-wrap gap-2"
+                >
+                  {QUICK_REPLIES.map(({ id, label, icon: Icon }) => (
+                    <button
+                      key={id}
+                      type="button"
+                      onClick={() => handleQuickReply(id)}
+                      className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-amber-400/40 dark:border-gold-500/40 bg-white/70 dark:bg-stone-900/50 text-amber-800 dark:text-gold-300 hover:bg-amber-50 dark:hover:bg-gold-500/10 hover:border-amber-500/70 dark:hover:border-gold-400 transition-colors"
+                    >
+                      <Icon size={12} /> {label}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
             </div>
 
             {/* Composer */}
@@ -263,6 +329,16 @@ export default function ChatWidget() {
         )}
       </AnimatePresence>
     </>
+  );
+}
+
+function Dot({ delay = 0 }) {
+  return (
+    <motion.span
+      className="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-gold-400"
+      animate={{ y: [0, -3, 0], opacity: [0.4, 1, 0.4] }}
+      transition={{ duration: 0.9, repeat: Infinity, ease: "easeInOut", delay }}
+    />
   );
 }
 
