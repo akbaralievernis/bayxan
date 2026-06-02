@@ -50,16 +50,15 @@ export default function Navbar() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link
             href="/"
-            className="font-display text-2xl tracking-widest text-stone-900 dark:text-[#FDF6E2] flex items-center gap-2.5 transition-colors"
+            className="group flex items-center gap-2.5 transition-colors"
           >
             <img
               src="/logo.jpeg"
-              alt="Байхан Logo"
-              className="w-9 h-9 rounded-full object-cover border border-amber-500/30 dark:border-gold-500/30 shadow-md"
+              alt={`${RESTAURANT.name} Logo`}
+              className="w-9 h-9 rounded-full object-cover border border-amber-500/40 dark:border-gold-500/40 shadow-md ring-1 ring-amber-100/40 dark:ring-gold-500/10 group-hover:ring-amber-200 dark:group-hover:ring-gold-400/30 transition-all"
             />
-            {RESTAURANT.name}
-            <span className="hidden sm:inline text-stone-400 dark:text-stone-500 text-sm tracking-[0.4em] ml-1">
-              {RESTAURANT.nameLocal}
+            <span className="font-display text-2xl tracking-widest text-stone-900 dark:text-[#FDF6E2] group-hover:text-amber-700 dark:group-hover:text-gold-300 transition-colors">
+              {RESTAURANT.name}
             </span>
           </Link>
 

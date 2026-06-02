@@ -90,25 +90,37 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* Trigger button — fixed bottom-right, glowing circular */}
+      {/* Trigger button — fixed bottom-right, premium gold gradient */}
       <motion.button
         type="button"
-        aria-label={open ? "Close chat" : "Open chat"}
+        aria-label={open ? "Закрыть чат" : "Открыть чат"}
         onClick={toggleChat}
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.6, type: "spring", stiffness: 240, damping: 18 }}
-        whileHover={{ scale: 1.08 }}
+        whileHover={{ scale: 1.06, y: -2 }}
         whileTap={{ scale: 0.94 }}
         className={cn(
-          "fixed z-50 bottom-5 right-5 sm:bottom-7 sm:right-7",
-          "w-14 h-14 sm:w-16 sm:h-16 rounded-full",
+          "group fixed z-50 bottom-5 right-5 sm:bottom-7 sm:right-7",
+          "w-14 h-14 sm:w-[60px] sm:h-[60px] rounded-full",
           "grid place-items-center",
-          "bg-neon text-obsidian-950",
-          "shadow-neon animate-pulse-glow",
+          "bg-gradient-to-br from-amber-300 via-gold-400 to-yellow-600",
+          "text-stone-900",
+          "shadow-gold hover:shadow-gold-lg transition-shadow",
+          "ring-1 ring-white/40 dark:ring-gold-200/30",
           "no-tap-highlight"
         )}
       >
+        {/* Soft inner sheen */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-full"
+          style={{
+            background:
+              "radial-gradient(120% 80% at 30% 20%, rgba(255,255,255,0.45) 0%, transparent 55%)",
+          }}
+        />
+
         <AnimatePresence mode="wait" initial={false}>
           {open ? (
             <motion.span
@@ -117,6 +129,7 @@ export default function ChatWidget() {
               animate={{ rotate: 0, opacity: 1 }}
               exit={{ rotate: 90, opacity: 0 }}
               transition={{ duration: 0.18 }}
+              className="relative"
             >
               <X size={22} strokeWidth={2.5} />
             </motion.span>
@@ -127,6 +140,7 @@ export default function ChatWidget() {
               animate={{ rotate: 0, opacity: 1 }}
               exit={{ rotate: 90, opacity: 0 }}
               transition={{ duration: 0.18 }}
+              className="relative"
             >
               <MessageCircle size={22} strokeWidth={2.25} />
             </motion.span>
@@ -142,18 +156,20 @@ export default function ChatWidget() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0, opacity: 0 }}
               transition={{ type: "spring", stiffness: 380, damping: 18 }}
-              className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 rounded-full bg-red-500 text-white text-[10px] font-bold grid place-items-center border-2 border-obsidian-950"
+              className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 rounded-full bg-red-500 text-white text-[10px] font-bold grid place-items-center border-2 border-white dark:border-[#120D0A] shadow-lg"
             >
               {unread > 9 ? "9+" : unread}
             </motion.span>
           )}
         </AnimatePresence>
 
-        {/* Ring pulse */}
-        <span
-          aria-hidden
-          className="absolute inset-0 rounded-full border border-neon/60 animate-ping opacity-50"
-        />
+        {/* Subtle ring pulse — only when no unread, fewer distractions */}
+        {unread === 0 && (
+          <span
+            aria-hidden
+            className="absolute inset-0 rounded-full border border-gold-300/50 dark:border-gold-400/40 animate-ping opacity-40"
+          />
+        )}
       </motion.button>
 
       {/* Pop-up window */}
@@ -170,24 +186,24 @@ export default function ChatWidget() {
               "bottom-24 right-3 sm:bottom-28 sm:right-7",
               "w-[min(94vw,380px)] h-[min(72vh,560px)]",
               "flex flex-col overflow-hidden rounded-3xl",
-              "glass-panel neon-ring"
+              "glass-panel gold-ring"
             )}
             role="dialog"
             aria-label="Bayhan chat"
           >
             {/* Header */}
-            <header className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-obsidian-900/60">
+            <header className="flex items-center justify-between px-4 py-3 border-b border-stone-200/60 dark:border-gold-500/20 bg-white/60 dark:bg-stone-900/60">
               <div className="flex items-center gap-3">
                 <div className="relative">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-ember-500 to-ember-700 grid place-items-center font-display text-white">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-300 via-gold-400 to-yellow-600 grid place-items-center font-display text-stone-900 shadow-gold-soft">
                     B
                   </div>
-                  <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-400 border-2 border-obsidian-900" />
+                  <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-400 border-2 border-white dark:border-stone-900" />
                 </div>
                 <div className="leading-tight">
-                  <div className="text-white text-sm font-medium">Консьерж {RESTAURANT.name}</div>
-                  <div className="text-white/50 text-[11px] inline-flex items-center gap-1">
-                    <Sparkles size={10} className="text-neon" /> обычно отвечает в течение минуты
+                  <div className="text-stone-900 dark:text-[#FDF6E2] text-sm font-medium">Консьерж {RESTAURANT.name}</div>
+                  <div className="text-stone-500 dark:text-stone-400 text-[11px] inline-flex items-center gap-1">
+                    <Sparkles size={10} className="text-amber-600 dark:text-gold-400" /> обычно отвечает в течение минуты
                   </div>
                 </div>
               </div>
@@ -195,7 +211,7 @@ export default function ChatWidget() {
                 type="button"
                 onClick={closeChat}
                 aria-label="Свернуть чат"
-                className="w-8 h-8 grid place-items-center rounded-full text-white/60 hover:text-neon hover:bg-white/5"
+                className="w-8 h-8 grid place-items-center rounded-full text-stone-500 dark:text-stone-400 hover:text-amber-700 dark:hover:text-gold-300 hover:bg-stone-100 dark:hover:bg-stone-800/60 transition-colors"
               >
                 <X size={16} />
               </button>
@@ -204,7 +220,7 @@ export default function ChatWidget() {
             {/* Messages */}
             <div
               ref={scrollerRef}
-              className="flex-1 overflow-y-auto px-4 py-4 space-y-2.5 bg-gradient-to-b from-obsidian-900/40 to-obsidian-950/60"
+              className="flex-1 overflow-y-auto px-4 py-4 space-y-2.5 bg-gradient-to-b from-white/30 to-stone-50/40 dark:from-stone-900/30 dark:to-[#120D0A]/60"
             >
               {messages.map((m) => (
                 <Bubble key={m.id} message={m} />
@@ -214,7 +230,7 @@ export default function ChatWidget() {
             {/* Composer */}
             <form
               onSubmit={handleSend}
-              className="px-3 py-3 border-t border-white/5 bg-obsidian-900/60 flex items-center gap-2"
+              className="px-3 py-3 border-t border-stone-200/60 dark:border-gold-500/20 bg-white/60 dark:bg-stone-900/60 flex items-center gap-2"
             >
               <input
                 ref={inputRef}
@@ -222,21 +238,21 @@ export default function ChatWidget() {
                 onChange={(e) => setText(e.target.value)}
                 placeholder="Напишите сообщение…"
                 className={cn(
-                  "flex-1 bg-obsidian-800/80 text-white text-sm rounded-full px-4 py-2.5",
-                  "border border-white/5 focus:border-neon/60 focus:outline-none",
-                  "placeholder:text-white/35 transition-colors"
+                  "flex-1 bg-white/80 dark:bg-stone-800/70 text-stone-900 dark:text-[#FDF6E2] text-sm rounded-full px-4 py-2.5",
+                  "border border-stone-200 dark:border-stone-700/60 focus:border-gold-400 dark:focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-400/20",
+                  "placeholder:text-stone-400 dark:placeholder:text-stone-500 transition-colors"
                 )}
               />
               <motion.button
                 type="submit"
                 disabled={!text.trim() || sending}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.92 }}
+                whileHover={text.trim() ? { scale: 1.05 } : undefined}
+                whileTap={text.trim() ? { scale: 0.92 } : undefined}
                 className={cn(
-                  "shrink-0 w-10 h-10 rounded-full grid place-items-center",
+                  "shrink-0 w-10 h-10 rounded-full grid place-items-center transition-all",
                   text.trim()
-                    ? "bg-neon text-obsidian-950 shadow-neon"
-                    : "bg-obsidian-700 text-white/40 cursor-not-allowed"
+                    ? "bg-gradient-to-br from-amber-300 via-gold-400 to-yellow-600 text-stone-900 shadow-gold-soft hover:shadow-gold"
+                    : "bg-stone-200 dark:bg-stone-800 text-stone-400 dark:text-stone-600 cursor-not-allowed"
                 )}
                 aria-label="Отправить сообщение"
               >
@@ -263,15 +279,15 @@ function Bubble({ message }) {
         className={cn(
           "max-w-[78%] px-3.5 py-2 rounded-2xl text-sm leading-snug break-words",
           mine
-            ? "bg-neon text-obsidian-950 rounded-br-md shadow-neon-soft"
-            : "bg-obsidian-800/90 text-white/90 rounded-bl-md border border-white/5"
+            ? "bg-gradient-to-br from-amber-300 via-gold-400 to-yellow-600 text-stone-900 rounded-br-md shadow-gold-soft"
+            : "bg-white/85 dark:bg-stone-800/80 text-stone-800 dark:text-stone-100 rounded-bl-md border border-stone-200/70 dark:border-stone-700/50"
         )}
       >
         {message.body}
         <div
           className={cn(
             "mt-1 text-[10px] tracking-wide",
-            mine ? "text-obsidian-950/60" : "text-white/40"
+            mine ? "text-stone-900/60" : "text-stone-500 dark:text-stone-400"
           )}
         >
           {new Date(message.created_at).toLocaleTimeString([], {

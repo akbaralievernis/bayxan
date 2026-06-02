@@ -48,8 +48,12 @@ html {
 }
 
 ::selection {
-  background: rgba(212, 175, 55, 0.25);
+  background: rgba(212, 175, 55, 0.35);
   color: #1c1917; /* stone-900 */
+}
+.dark ::selection {
+  background: rgba(212, 175, 55, 0.55);
+  color: #FDF6E2; /* cream — readable on dark backdrops */
 }
 
 /* Scrollbar — slim cream track with gold-hover thumb */

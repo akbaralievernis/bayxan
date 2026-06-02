@@ -20,18 +20,18 @@ export default function OrderSummary() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="rounded-2xl p-6 text-center bg-white/70 backdrop-blur-md border border-white/90 shadow-sm"
+        className="rounded-2xl p-6 text-center bg-white/70 dark:bg-stone-900/40 backdrop-blur-md border border-white/90 dark:border-gold-500/15 shadow-sm dark:shadow-[0_8px_30px_rgba(0,0,0,0.25)]"
       >
-        <div className="mx-auto w-14 h-14 rounded-full grid place-items-center border border-gold-300/70 bg-white/80 shadow-gold-soft mb-4">
-          <ShoppingBag size={20} className="text-amber-600" />
+        <div className="mx-auto w-14 h-14 rounded-full grid place-items-center border border-gold-300/70 dark:border-gold-500/40 bg-white/80 dark:bg-stone-900/60 shadow-gold-soft mb-4">
+          <ShoppingBag size={20} className="text-amber-600 dark:text-gold-400" />
         </div>
-        <h3 className="font-display text-lg text-stone-900 mb-2">{t("order.empty.title")}</h3>
-        <p className="text-sm text-stone-500 leading-relaxed mb-5">
+        <h3 className="font-display text-lg text-stone-900 dark:text-[#FDF6E2] mb-2">{t("order.empty.title")}</h3>
+        <p className="text-sm text-stone-500 dark:text-stone-400 leading-relaxed mb-5">
           {t("order.empty.body")}
         </p>
         <Link
           href="/menu"
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-gold-400/50 text-amber-700 text-xs uppercase tracking-wider hover:bg-amber-50/70 hover:border-gold-500/80 hover:shadow-gold-soft transition-all"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-gold-400/50 dark:border-gold-500/40 text-amber-700 dark:text-gold-300 text-xs uppercase tracking-wider hover:bg-amber-50/70 dark:hover:bg-gold-500/10 hover:border-gold-500/80 hover:shadow-gold-soft transition-all"
         >
           {t("order.empty.cta")} <ArrowRight size={12} />
         </Link>
@@ -44,18 +44,18 @@ export default function OrderSummary() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="rounded-2xl overflow-hidden bg-white/70 backdrop-blur-md border border-white/90 shadow-sm"
+      className="rounded-2xl overflow-hidden bg-white/70 dark:bg-stone-900/40 backdrop-blur-md border border-white/90 dark:border-gold-500/15 shadow-sm dark:shadow-[0_8px_30px_rgba(0,0,0,0.25)]"
     >
-      <header className="px-5 py-4 border-b border-stone-200/70 bg-white/40">
-        <h3 className="text-xs uppercase tracking-[0.3em] text-amber-700">
+      <header className="px-5 py-4 border-b border-stone-200/70 dark:border-stone-700/40 bg-white/40 dark:bg-stone-900/40">
+        <h3 className="text-xs uppercase tracking-[0.3em] text-amber-700 dark:text-gold-400">
           {t("order.header.title")}
         </h3>
-        <p className="text-[11px] text-stone-500 mt-1 tabular-nums">
+        <p className="text-[11px] text-stone-500 dark:text-stone-400 mt-1 tabular-nums">
           {items.length} {plur(items.length, locale)} · {count} {locale === "ky" ? "даана" : "шт."}
         </p>
       </header>
 
-      <ul className="divide-y divide-stone-200/70 max-h-[420px] overflow-y-auto">
+      <ul className="divide-y divide-stone-200/70 dark:divide-stone-700/40 max-h-[420px] overflow-y-auto">
         <AnimatePresence initial={false}>
           {items.map((item) => (
             <motion.li
@@ -67,7 +67,7 @@ export default function OrderSummary() {
               transition={{ duration: 0.2 }}
               className="px-5 py-3 flex items-center gap-3"
             >
-              <div className="w-10 h-10 rounded-lg overflow-hidden bg-stone-100 shrink-0">
+              <div className="w-10 h-10 rounded-lg overflow-hidden bg-stone-100 dark:bg-stone-800 shrink-0">
                 {item.imagePlaceholder && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -78,10 +78,10 @@ export default function OrderSummary() {
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-sm text-stone-800 line-clamp-1">{item.name}</div>
-                <div className="text-[11px] text-stone-400 tabular-nums">× {item.quantity}</div>
+                <div className="text-sm text-stone-800 dark:text-[#FDF6E2] line-clamp-1">{item.name}</div>
+                <div className="text-[11px] text-stone-400 dark:text-stone-500 tabular-nums">× {item.quantity}</div>
               </div>
-              <div className="text-sm text-amber-700 font-medium tabular-nums">
+              <div className="text-sm text-amber-700 dark:text-gold-300 font-medium tabular-nums">
                 {formatKGS(item.price * item.quantity)}
               </div>
             </motion.li>
@@ -89,19 +89,16 @@ export default function OrderSummary() {
         </AnimatePresence>
       </ul>
 
-      <footer className="px-5 py-4 border-t border-stone-200/70 bg-white/40 flex items-baseline justify-between">
-        <span className="text-xs uppercase tracking-[0.25em] text-stone-500">
+      <footer className="px-5 py-4 border-t border-stone-200/70 dark:border-stone-700/40 bg-white/40 dark:bg-stone-900/40 flex items-baseline justify-between">
+        <span className="text-xs uppercase tracking-[0.25em] text-stone-500 dark:text-stone-400">
           {t("order.footer.total")}
         </span>
-        <motion.span
+        <span
           key={total}
-          initial={{ scale: 1.05, color: "#B8941F" }}
-          animate={{ scale: 1, color: "#1c1917" }}
-          transition={{ duration: 0.35 }}
-          className="font-display text-2xl tabular-nums"
+          className="font-display text-2xl tabular-nums text-stone-900 dark:text-[#FDF6E2]"
         >
           {formatKGS(total)}
-        </motion.span>
+        </span>
       </footer>
     </motion.div>
   );

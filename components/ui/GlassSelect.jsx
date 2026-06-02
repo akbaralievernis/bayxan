@@ -75,7 +75,7 @@ export default function GlassSelect({
   }, [open, value, options]);
 
   return (
-    <div ref={wrapRef} className={cn("relative", open && "z-50", className)}>
+    <div ref={wrapRef} className={cn("relative", open ? "z-[60]" : "z-0", className)}>
       <button
         type="button"
         id={id}
@@ -125,10 +125,10 @@ export default function GlassSelect({
             exit={{ opacity: 0, y: -6, scale: 0.98 }}
             transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
             className={cn(
-              "absolute z-40 top-full left-0 right-0 mt-2",
+              "absolute z-[70] top-full left-0 right-0 mt-2",
               "max-h-64 overflow-y-auto py-1",
-              "rounded-xl bg-white/95 dark:bg-stone-900/95 backdrop-blur-md border border-white/90 dark:border-stone-800",
-              "shadow-[0_12px_40px_rgba(60,40,10,0.10)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.4)]"
+              "rounded-xl bg-white dark:bg-[#1A1410] backdrop-blur-xl border border-stone-200 dark:border-gold-500/30",
+              "shadow-[0_12px_40px_rgba(60,40,10,0.18)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.7)]"
             )}
           >
             {options.map((opt, i) => {
