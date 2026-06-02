@@ -1,14 +1,22 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * Custom white-glass dropdown — direct refactor of the former NeonSelect.
- * All Framer Motion (springs, AnimatePresence) and keyboard logic preserved
- * exactly; only Tailwind tokens move to the light/gold system.
+ * White-glass dropdown.
+ *
+ * The popup is rendered via a React Portal to `document.body` with
+ * `position: fixed` coordinates computed from the trigger's bounding
+ * rect. Reason: every Section in the booking form is a `motion.fieldset`
+ * whose `y` animation leaves a CSS `transform` on the element, which
+ * creates a new stacking context. An `absolute` popup inside one section
+ * can never paint above the siblings below it, no matter how large the
+ * z-index — siblings' stacking contexts are independent. Portaling to
+ * <body> sidesteps the trap entirely.
  *
  *   options: [{ id, label, hint? }]
  *   value:   id of the active option (or "")
@@ -26,28 +34,52 @@ export default function GlassSelect({
   const id = useId();
   const [open, setOpen] = useState(false);
   const [focusIdx, setFocusIdx] = useState(-1);
-  const [openUp, setOpenUp] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [coords, setCoords] = useState({ top: 0, left: 0, width: 0, openUp: false });
   const wrapRef = useRef(null);
   const listRef = useRef(null);
 
   const selected = options.find((o) => o.id === value);
 
-  // Decide open direction based on available viewport space.
-  // Estimate panel height: ~44px per option, capped by max-h-64 (256px).
-  useEffect(() => {
-    if (!open || !wrapRef.current) return;
-    const rect = wrapRef.current.getBoundingClientRect();
-    const estimated = Math.min(options.length * 44 + 16, 256);
-    const spaceBelow = window.innerHeight - rect.bottom;
-    const spaceAbove = rect.top;
-    setOpenUp(spaceBelow < estimated + 12 && spaceAbove > spaceBelow);
+  useEffect(() => { setMounted(true); }, []);
+
+  // Recompute popup coordinates whenever it opens, the trigger moves, the
+  // window resizes, or anything in the page scrolls (sticky sidebars etc.).
+  useLayoutEffect(() => {
+    if (!open) return;
+
+    function recompute() {
+      const el = wrapRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const estimated = Math.min(options.length * 44 + 16, 256);
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+      const openUp = spaceBelow < estimated + 16 && spaceAbove > spaceBelow;
+      setCoords({
+        top:   openUp ? rect.top - 8 : rect.bottom + 8,
+        left:  rect.left,
+        width: rect.width,
+        openUp,
+      });
+    }
+
+    recompute();
+    window.addEventListener("scroll", recompute, true); // capture: catch nested scrollers
+    window.addEventListener("resize", recompute);
+    return () => {
+      window.removeEventListener("scroll", recompute, true);
+      window.removeEventListener("resize", recompute);
+    };
   }, [open, options.length]);
 
-  // Click outside
+  // Click outside — close. We check both the trigger and the portaled list.
   useEffect(() => {
     if (!open) return;
     const onDown = (e) => {
-      if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
+      const inTrigger = wrapRef.current && wrapRef.current.contains(e.target);
+      const inList    = listRef.current && listRef.current.contains(e.target);
+      if (!inTrigger && !inList) setOpen(false);
     };
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
@@ -86,8 +118,78 @@ export default function GlassSelect({
     }
   }, [open, value, options]);
 
+  const popup = (
+    <AnimatePresence>
+      {open && (
+        <motion.ul
+          ref={listRef}
+          role="listbox"
+          initial={{ opacity: 0, y: coords.openUp ? 6 : -6, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: coords.openUp ? 6 : -6, scale: 0.98 }}
+          transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
+          style={{
+            position: "fixed",
+            top:   coords.openUp ? undefined : coords.top,
+            // For openUp we anchor via `bottom` so the popup grows upward from the trigger's top.
+            bottom: coords.openUp ? window.innerHeight - coords.top : undefined,
+            left:  coords.left,
+            width: coords.width,
+            // Inline opaque background guarantees no transparency regression if a utility class
+            // gets stripped or overridden mid-animation.
+            backgroundColor: "var(--gs-bg)",
+            transformOrigin: coords.openUp ? "bottom center" : "top center",
+          }}
+          className={cn(
+            "z-[100] max-h-64 overflow-y-auto py-1 rounded-xl",
+            "border border-stone-200 dark:border-gold-500/30",
+            "shadow-[0_12px_40px_rgba(60,40,10,0.18)] dark:shadow-[0_24px_60px_rgba(0,0,0,0.75)]",
+            // CSS var picks the right opaque base for light vs dark theme.
+            "[--gs-bg:#ffffff] dark:[--gs-bg:#1A1410]"
+          )}
+        >
+          {options.map((opt, i) => {
+            const isActive = value === opt.id;
+            const isFocused = focusIdx === i;
+            return (
+              <li key={opt.id} role="option" aria-selected={isActive}>
+                <button
+                  type="button"
+                  onMouseEnter={() => setFocusIdx(i)}
+                  onClick={() => {
+                    onChange(opt.id);
+                    setOpen(false);
+                  }}
+                  className={cn(
+                    "w-full text-left px-4 py-2.5 text-sm flex items-center justify-between gap-3 transition-colors",
+                    isFocused
+                      ? "bg-amber-50 dark:bg-stone-800"
+                      : "hover:bg-stone-50 dark:hover:bg-stone-800/70",
+                    isActive
+                      ? "text-amber-900 dark:text-gold-300 font-medium"
+                      : "text-stone-800 dark:text-[#FDF6E2]"
+                  )}
+                >
+                  <span className="flex-1 min-w-0">
+                    <span className="block leading-tight">{opt.label}</span>
+                    {opt.hint && (
+                      <span className="block text-[11px] text-stone-500 dark:text-stone-400 mt-0.5">
+                        {opt.hint}
+                      </span>
+                    )}
+                  </span>
+                  {isActive && <Check size={14} className="shrink-0 text-amber-600 dark:text-gold-500" />}
+                </button>
+              </li>
+            );
+          })}
+        </motion.ul>
+      )}
+    </AnimatePresence>
+  );
+
   return (
-    <div ref={wrapRef} className={cn("relative", open ? "z-[60]" : "z-0", className)}>
+    <div ref={wrapRef} className={cn("relative", className)}>
       <button
         type="button"
         id={id}
@@ -127,57 +229,8 @@ export default function GlassSelect({
         {required && <span className="ml-0.5 text-gold-600 dark:text-gold-500">*</span>}
       </label>
 
-      <AnimatePresence>
-        {open && (
-          <motion.ul
-            ref={listRef}
-            role="listbox"
-            initial={{ opacity: 0, y: openUp ? 6 : -6, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: openUp ? 6 : -6, scale: 0.98 }}
-            transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
-            className={cn(
-              "absolute z-[70] left-0 right-0",
-              openUp ? "bottom-full mb-2" : "top-full mt-2",
-              "max-h-64 overflow-y-auto py-1",
-              "rounded-xl bg-white dark:bg-[#1A1410] backdrop-blur-xl border border-stone-200 dark:border-gold-500/30",
-              "shadow-[0_12px_40px_rgba(60,40,10,0.18)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.7)]"
-            )}
-          >
-            {options.map((opt, i) => {
-              const isActive = value === opt.id;
-              const isFocused = focusIdx === i;
-              return (
-                <li key={opt.id} role="option" aria-selected={isActive}>
-                  <button
-                    type="button"
-                    onMouseEnter={() => setFocusIdx(i)}
-                    onClick={() => {
-                      onChange(opt.id);
-                      setOpen(false);
-                    }}
-                    className={cn(
-                      "w-full text-left px-4 py-2.5 text-sm flex items-center justify-between gap-3 transition-colors",
-                      isFocused ? "bg-amber-50 dark:bg-stone-800/80" : "hover:bg-stone-50 dark:hover:bg-stone-800/50",
-                      isActive ? "text-amber-900 dark:text-gold-300 font-medium" : "text-stone-800 dark:text-[#FDF6E2]"
-                    )}
-                  >
-                    <span className="flex-1 min-w-0">
-                      <span className="block leading-tight">{opt.label}</span>
-                      {opt.hint && (
-                        <span className="block text-[11px] text-stone-500 dark:text-stone-400 mt-0.5">
-                          {opt.hint}
-                        </span>
-                      )}
-                    </span>
-                    {isActive && <Check size={14} className="shrink-0 text-amber-600 dark:text-gold-500" />}
-                  </button>
-                </li>
-              );
-            })}
-          </motion.ul>
-        )}
-      </AnimatePresence>
+      {/* Portal popup so the popup escapes nested transform/overflow stacking contexts. */}
+      {mounted && createPortal(popup, document.body)}
     </div>
   );
 }
